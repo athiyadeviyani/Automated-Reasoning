@@ -12,7 +12,15 @@ lemma "A\<or>A \<longrightarrow> A"
 
 (*1 mark*)
 lemma "(P\<longrightarrow>R)\<longrightarrow>(\<not>P\<or>R)"
-  oops
+  apply (rule impI)
+  apply (rule classical)
+  apply (rule disjI1)
+  apply (rule notI)
+  apply (erule notE)
+  apply (rule disjI2)
+  apply (erule impE)
+   apply assumption
+  apply assumption
 
 (*1 mark*)
 lemma "(P\<and>Q\<longrightarrow>R)\<longrightarrow>P\<longrightarrow>Q\<longrightarrow>R"
@@ -59,6 +67,10 @@ lemma "(P\<or>R)\<longleftrightarrow>(\<not>(\<not>P\<and> \<not>R))"
 
 (*1 mark*)
 lemma "(\<forall> x . F x \<longrightarrow> G x ) \<longrightarrow> \<not> (\<exists> x . F x \<and> \<not> G x )"
+  apply (rule impI)
+  apply (rule classical)
+  apply (erule allE)
+  apply (erule notE)
   oops
 
 (*1 mark*)
@@ -70,6 +82,11 @@ lemma "(\<forall> x y. R x y) \<longrightarrow> (\<forall> x . R x x )"
 
 (*3 marks*)
 lemma "(\<forall>x. P x)\<or>(\<exists>x.\<not>P x)"
+  apply (rule classical)
+  apply (rule disjI1)
+  apply (rule allI)
+  apply (rule classical)
+  apply (erule notE)
   oops
 
 (*3 marks*)
@@ -79,7 +96,10 @@ lemma "(\<forall>x. \<not> (P x \<longrightarrow> Q x)) \<longrightarrow> \<not>
 
 (*3 marks*)
 lemma "\<exists>Bob. (drunk Bob \<longrightarrow> (\<forall>y. drunk y))"
-  oops
+  apply (rule exI)
+  apply (rule impI)
+  apply (rule_tac y="Bob" in allI)
+  apply assumption
 
 
 (*4 marks*)
