@@ -8,7 +8,8 @@ begin
 lemma "A\<or>A \<longrightarrow> A"
   apply (rule impI)
   apply (erule disjE)
-  apply assumption+
+   apply assumption+
+  done
 
 (*1 mark*)
 lemma "(P\<longrightarrow>R)\<longrightarrow>(\<not>P\<or>R)"
@@ -21,6 +22,7 @@ lemma "(P\<longrightarrow>R)\<longrightarrow>(\<not>P\<or>R)"
   apply (erule impE)
    apply assumption
   apply assumption
+  done
 
 (*1 mark*)
 lemma "(P\<and>Q\<longrightarrow>R)\<longrightarrow>P\<longrightarrow>Q\<longrightarrow>R"
@@ -37,6 +39,7 @@ lemma "\<not>\<not>P \<or> \<not>P"
   apply (erule notE)
   apply (rule disjI2) 
   apply assumption
+  done
 
 (*4 marks*)
 lemma "(P\<or>R)\<longleftrightarrow>(\<not>(\<not>P\<and> \<not>R))"
@@ -62,16 +65,28 @@ lemma "(P\<or>R)\<longleftrightarrow>(\<not>(\<not>P\<and> \<not>R))"
   apply (rule notI)
    apply (erule notE)
    apply (rule disjI2)
-   apply assumption
+  apply assumption
+  done
 
+lemma not_not_p_is_p: "\<not>\<not>P \<Longrightarrow> P"
+  apply (rule classical)
+  apply (erule notE)
+  apply assumption
+  done
 
 (*1 mark*)
 lemma "(\<forall> x . F x \<longrightarrow> G x ) \<longrightarrow> \<not> (\<exists> x . F x \<and> \<not> G x )"
   apply (rule impI)
   apply (rule classical)
+  apply (drule not_not_p_is_p)
+  apply (erule exE)
   apply (erule allE)
+  apply (erule conjE)
+  apply (erule impE)
+   apply assumption
   apply (erule notE)
-  oops
+  apply assumption
+  done
 
 (*1 mark*)
 lemma "(\<forall> x y. R x y) \<longrightarrow> (\<forall> x . R x x )"
@@ -79,6 +94,7 @@ lemma "(\<forall> x y. R x y) \<longrightarrow> (\<forall> x . R x x )"
   apply (rule allI)
   apply (erule allE)+
   apply assumption
+  done
 
 (*3 marks*)
 lemma "(\<forall>x. P x)\<or>(\<exists>x.\<not>P x)"
@@ -91,15 +107,34 @@ lemma "(\<forall>x. P x)\<or>(\<exists>x.\<not>P x)"
 
 (*3 marks*)
 lemma "(\<forall>x. \<not> (P x \<longrightarrow> Q x)) \<longrightarrow> \<not>(\<exists>x. \<not>P x \<and> Q x)"
-  oops
+  apply (rule impI)
+  apply (rule classical)
+  apply (drule not_not_p_is_p)
+  apply (erule exE)
+  apply (erule allE)
+  apply (erule conjE)
+  apply (erule notE)
+  apply (rule impI)
+  apply assumption
 
 
 (*3 marks*)
 lemma "\<exists>Bob. (drunk Bob \<longrightarrow> (\<forall>y. drunk y))"
+  apply (cut_tac P = "(\<forall>y. drunk y)" in excluded_middle)
+  apply (erule disjE)
+  apply (rule ccontr)
+  apply (erule notE)
+  apply (rule allI)
+  apply (rule ccontr)
+  apply (erule notE)
   apply (rule exI)
   apply (rule impI)
-  apply (rule_tac y="Bob" in allI)
+  apply (erule notE)
   apply assumption
+  apply (rule exI)
+  apply (rule impI)
+  apply assumption
+  done
 
 
 (*4 marks*)
