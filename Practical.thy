@@ -103,6 +103,8 @@ lemma "(\<forall>x. P x)\<or>(\<exists>x.\<not>P x)"
   apply (rule allI)
   apply (rule classical)
   apply (erule notE)
+  apply (rule disjI1)
+  apply (rule allI)
   oops
 
 (*3 marks*)
@@ -116,6 +118,7 @@ lemma "(\<forall>x. \<not> (P x \<longrightarrow> Q x)) \<longrightarrow> \<not>
   apply (erule notE)
   apply (rule impI)
   apply assumption
+  done
 
 
 (*3 marks*)
@@ -144,9 +147,11 @@ lemma "\<not> (\<exists> barber . man barber \<and> (\<forall> x . man x \<and> 
 locale incidence =
   fixes incidence_points_on_sections :: "'point \<Rightarrow> 'section \<Rightarrow> bool" (infix " \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t " 80)
   fixes region_to_section :: "'region \<Rightarrow> 'section" 
-  assumes section_nonempty: (*Write here your axiom stating that every section has 
+  assumes section_nonempty: "s \<Longrightarrow> \<exists>p. incidence_points_on_sections p s" 
+(*Write here your axiom stating that every section has 
                                             a point incident to it*) (*2 marks*)
-  and section_uniqueness: (*Write here your axiom stating that two sections are the same
+  and section_uniqueness: "\<lbrakk>incidence_points_on_sections a s; incidence_points_on_sections a l\<rbrakk> \<Longrightarrow> s = l"
+(*Write here your axiom stating that two sections are the same
                                       if the same points are incident to each*) (*2 marks*)
 begin
 
