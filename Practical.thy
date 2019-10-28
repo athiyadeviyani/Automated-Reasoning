@@ -5,14 +5,14 @@ begin
 (***************************First-order logic*************************************)
 
 (*1 mark*)
-lemma "A\<or>A \<longrightarrow> A"
+lemma "A∨A ⟶ A"
   apply (rule impI)
   apply (erule disjE)
    apply assumption+
   done
 
 (*1 mark*)
-lemma "(P\<longrightarrow>R)\<longrightarrow>(\<not>P\<or>R)"
+lemma "(P⟶R)⟶(¬P∨R)"
   apply (rule impI)
   apply (rule classical)
   apply (rule disjI1)
@@ -25,14 +25,14 @@ lemma "(P\<longrightarrow>R)\<longrightarrow>(\<not>P\<or>R)"
   done
 
 (*1 mark*)
-lemma "(P\<and>Q\<longrightarrow>R)\<longrightarrow>P\<longrightarrow>Q\<longrightarrow>R"
+lemma "(P∧Q⟶R)⟶P⟶Q⟶R"
   apply (rule impI)+
   apply (erule impE)
    apply (rule conjI)
   apply assumption+
 
 (*3 marks*)
-lemma "\<not>\<not>P \<or> \<not>P"
+lemma "¬¬P ∨ ¬P"
   apply (rule classical)
   apply (rule disjI1)
   apply (rule notI)
@@ -42,7 +42,7 @@ lemma "\<not>\<not>P \<or> \<not>P"
   done
 
 (*4 marks*)
-lemma "(P\<or>R)\<longleftrightarrow>(\<not>(\<not>P\<and> \<not>R))"
+lemma "(P∨R)⟷(¬(¬P∧ ¬R))"
   apply (rule iffI)
    apply (erule disjE)
     apply (rule notI)
@@ -68,14 +68,14 @@ lemma "(P\<or>R)\<longleftrightarrow>(\<not>(\<not>P\<and> \<not>R))"
   apply assumption
   done
 
-lemma not_not_p_is_p: "\<not>\<not>P \<Longrightarrow> P"
+lemma not_not_p_is_p: "¬¬P ⟹ P"
   apply (rule classical)
   apply (erule notE)
   apply assumption
   done
 
 (*1 mark*)
-lemma "(\<forall> x . F x \<longrightarrow> G x ) \<longrightarrow> \<not> (\<exists> x . F x \<and> \<not> G x )"
+lemma "(∀ x . F x ⟶ G x ) ⟶ ¬ (∃ x . F x ∧ ¬ G x )"
   apply (rule impI)
   apply (rule classical)
   apply (drule not_not_p_is_p)
@@ -89,7 +89,7 @@ lemma "(\<forall> x . F x \<longrightarrow> G x ) \<longrightarrow> \<not> (\<ex
   done
 
 (*1 mark*)
-lemma "(\<forall> x y. R x y) \<longrightarrow> (\<forall> x . R x x )"
+lemma "(∀ x y. R x y) ⟶ (∀ x . R x x )"
   apply (rule impI)
   apply (rule allI)
   apply (erule allE)+
@@ -97,7 +97,7 @@ lemma "(\<forall> x y. R x y) \<longrightarrow> (\<forall> x . R x x )"
   done
 
 (*3 marks*)
-lemma "(\<forall>x. P x)\<or>(\<exists>x.\<not>P x)"
+lemma "(∀x. P x)∨(∃x.¬P x)"
   apply (rule classical)
   apply (rule disjI1)
   apply (rule allI)
@@ -108,7 +108,7 @@ lemma "(\<forall>x. P x)\<or>(\<exists>x.\<not>P x)"
   oops
 
 (*3 marks*)
-lemma "(\<forall>x. \<not> (P x \<longrightarrow> Q x)) \<longrightarrow> \<not>(\<exists>x. \<not>P x \<and> Q x)"
+lemma "(∀x. ¬ (P x ⟶ Q x)) ⟶ ¬(∃x. ¬P x ∧ Q x)"
   apply (rule impI)
   apply (rule classical)
   apply (drule not_not_p_is_p)
@@ -122,8 +122,8 @@ lemma "(\<forall>x. \<not> (P x \<longrightarrow> Q x)) \<longrightarrow> \<not>
 
 
 (*3 marks*)
-lemma "\<exists>Bob. (drunk Bob \<longrightarrow> (\<forall>y. drunk y))"
-  apply (cut_tac P = "(\<forall>y. drunk y)" in excluded_middle)
+lemma "∃Bob. (drunk Bob ⟶ (∀y. drunk y))"
+  apply (cut_tac P = "(∀y. drunk y)" in excluded_middle)
   apply (erule disjE)
   apply (rule ccontr)
   apply (erule notE)
@@ -141,28 +141,32 @@ lemma "\<exists>Bob. (drunk Bob \<longrightarrow> (\<forall>y. drunk y))"
 
 
 (*4 marks*)
-lemma "\<not> (\<exists> barber . man barber \<and> (\<forall> x . man x \<and> \<not>shaves x x \<longleftrightarrow> shaves barber x ))"
+lemma "¬ (∃ barber . man barber ∧ (∀ x . man x ∧ ¬shaves x x ⟷ shaves barber x ))"
   oops
 
 locale incidence =
-  fixes incidence_points_on_sections :: "'point \<Rightarrow> 'section \<Rightarrow> bool" (infix " \<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t " 80)
-  fixes region_to_section :: "'region \<Rightarrow> 'section" 
-  assumes section_nonempty: "s \<Longrightarrow> \<exists>p. incidence_points_on_sections p s" 
+  fixes incidence_points_on_sections :: "'point ⇒ 'section ⇒ bool" (infix " ι⇩p⇩o⇩i⇩n⇩t " 80)
+  fixes region_to_section :: "'region ⇒ 'section" 
+  assumes section_nonempty: "∀s. ∃p. p ι⇩p⇩o⇩i⇩n⇩t s" 
 (*Write here your axiom stating that every section has 
                                             a point incident to it*) (*2 marks*)
-  and section_uniqueness: "\<lbrakk>incidence_points_on_sections a s; incidence_points_on_sections a l\<rbrakk> \<Longrightarrow> s = l"
-(*Write here your axiom stating that two sections are the same
-                                      if the same points are incident to each*) (*2 marks*)
+  and section_uniqueness: "∀a s l. (a ι⇩p⇩o⇩i⇩n⇩t s ⟷ a ι⇩p⇩o⇩i⇩n⇩t l) ⟶ s = l" 
+(*  and section_uniqueness_meta: "⟦a ι⇩p⇩o⇩i⇩n⇩t s ⟷ a ι⇩p⇩o⇩i⇩n⇩t l⟧ ⟹ s = l" *)
+(*Write here your axiom stating that ANY two sections are the same
+                                      if ANY of the same points are incident to each*) (*2 marks*)
 begin
 
-definition isPartOf ::"'section \<Rightarrow> 'section \<Rightarrow> bool" (infix "isPartOf" 80) where 
+definition isPartOf ::"'section ⇒ 'section ⇒ bool" (infix "isPartOf" 80) where 
+"a isPartOf b = (∀p. p ι⇩p⇩o⇩i⇩n⇩t a ⟶ p ι⇩p⇩o⇩i⇩n⇩t b)"
 (*write your formalisation of definition D1 here*) (*1 mark*)
 
-definition inclusion ::"'region \<Rightarrow> 'section \<Rightarrow> bool"(infix "isIncludedIn" 80) where
+definition inclusion ::"'region ⇒ 'section ⇒ bool"(infix "isIncludedIn" 80) where
 (*write your formalisation of definition D2 here*) (*1 mark*)
+"a isIncludedIn b = (region_to_section a) isPartOf b"
 
-definition overlaps ::"'region \<Rightarrow> 'section \<Rightarrow> bool"(infix "overlaps" 80) where
+definition overlaps ::"'region ⇒ 'section ⇒ bool"(infix "overlaps" 80) where
 (*write your formalisation of definition D3 here*) (*1 mark*)
+"a overlaps b = (∃p. p ι⇩p⇩o⇩i⇩n⇩t (region_to_section a) ∧ p ι⇩p⇩o⇩i⇩n⇩t b)"
 
 lemma region_overlaps_itself: "R overlaps (region_to_section R)"
 (*Write your structured proof here*) (*2 marks*)
@@ -186,28 +190,28 @@ end
 
 
 locale section_bundles =  incidence incidence_points_on_sections region_to_section 
-  for  incidence_points_on_sections :: "'point \<Rightarrow> 'section \<Rightarrow> bool" 
-  and region_to_section :: "'region \<Rightarrow> 'section" +
-  fixes crossing :: "'region \<Rightarrow> 'section \<Rightarrow> bool" 
-  and incidence_sections_on_bundles :: "'section \<Rightarrow> 'bundle \<Rightarrow> bool" (infix "\<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n" 80) 
+  for  incidence_points_on_sections :: "'point ⇒ 'section ⇒ bool" 
+  and region_to_section :: "'region ⇒ 'section" +
+  fixes crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80)
+  and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80) 
  assumes SC1: (*Write your formalisation of Axiom SC1 here*) (*1 mark*)
  and SI1: (*Write your formalisation of Axiom SI1 here*)     (*1 mark*)
 begin
 
-definition atLeastAsRestrictiveAs :: "'section \<Rightarrow> 'bundle \<Rightarrow> 'section \<Rightarrow> bool" where 
+definition atLeastAsRestrictiveAs :: "'section ⇒ 'bundle ⇒ 'section ⇒ bool" where 
 (*Write your formalisation of atLeastAsRestrictiveAs here*) (*1 mark*)
 
 notation 
-  atLeastAsRestrictiveAs ("_ \<le>\<^sub>_ _" [80, 80, 80] 80)
+  atLeastAsRestrictiveAs ("_ ≤⇩_ _" [80, 80, 80] 80)
 
 
 (*Formalise and prove that isPartOf is reflexive, transitive and antisymmetric*) (*2 marks*)
 
-(*Kulik and Eschenbach say 'The relation \<ge> is reflexive, transitive and antisymmetric for a given 
+(*Kulik and Eschenbach say 'The relation ≥ is reflexive, transitive and antisymmetric for a given 
 sector bundle.' So, do they mean, given that the sections under consideration are in the bundle?
 This is what we assume for reflexivity.*)
 lemma atLeastAsRestrictiveAs_reflexive: 
-  assumes "s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b"  shows "s \<le>\<^sub>b s"
+  assumes "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"  shows "s ≤⇩b s"
 (*Add your proof here*)
   oops
 
@@ -223,10 +227,10 @@ end
 
 locale comparison = section_bundles incidence_points_on_sections region_to_section 
  crossing incidence_sections_on_bundles
-  for  incidence_points_on_sections :: "'point \<Rightarrow> 'section \<Rightarrow> bool" (infix "\<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t" 80) 
-  and region_to_section :: "'region \<Rightarrow> 'section" 
-  and crossing :: "'region \<Rightarrow> 'section \<Rightarrow> bool" (infix "crosses" 80) 
-  and incidence_sections_on_bundles :: "'section \<Rightarrow> 'bundle \<Rightarrow> bool" (infix "\<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n" 80)+
+  for  incidence_points_on_sections :: "'point ⇒ 'section ⇒ bool" (infix "ι⇩p⇩o⇩i⇩n⇩t" 80) 
+  and region_to_section :: "'region ⇒ 'section" 
+  and crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80) 
+  and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80)+
 assumes SB2:(*Write your formalisation of Axiom SB2 here*) (*1 mark*)
 begin
 
@@ -235,7 +239,7 @@ lemma T1:(*Write your formalisation and proof of Theorem T1 here*) (*1 mark*)
 lemma T2:(*Write your formalisation and proof of Theorem T2 here*) (*1 mark*)
 
 definition isCore (infix "isCoreOf" 80) where
-"s isCoreOf b = (s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<and> (\<forall>s'. s' \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> s \<le>\<^sub>b s'))"
+"s isCoreOf b = (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ (∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s'))"
 
 definition (*Write your definition of hull here*) (*1 mark*)
 
@@ -244,10 +248,10 @@ end
 
 locale crossing_sector = comparison incidence_points_on_sections 
           region_to_section crossing incidence_sections_on_bundles
-          for incidence_points_on_sections :: "'point \<Rightarrow> 'section \<Rightarrow> bool" (infix "\<iota>\<^sub>p\<^sub>o\<^sub>i\<^sub>n\<^sub>t" 80) 
-and region_to_section :: "'region \<Rightarrow> 'section" 
-and crossing :: "'region \<Rightarrow> 'section \<Rightarrow> bool" (infix "crosses" 80)  
-and incidence_sections_on_bundles :: "'section \<Rightarrow> 'bundle \<Rightarrow> bool" (infix "\<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n" 80) +
+          for incidence_points_on_sections :: "'point ⇒ 'section ⇒ bool" (infix "ι⇩p⇩o⇩i⇩n⇩t" 80) 
+and region_to_section :: "'region ⇒ 'section" 
+and crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80)  
+and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80) +
 assumes SC2: (*Write your formalisation of Axiom SC2 here*) (*1 mark*)
 begin
 
@@ -264,30 +268,30 @@ lemma not_overlap_hull:  (*Write your formalisation and structured proof of the 
 does not overlap the hull of a section bundle, it does not overlap any of its sections'*) 
 (*4 marks*)
 
-definition overlapsAsMuchAs :: "'region \<Rightarrow> 'bundle \<Rightarrow> 'region \<Rightarrow> bool"  where 
-"overlapsAsMuchAs R b R' == (\<forall>s. s \<iota>\<^sub>s\<^sub>e\<^sub>c\<^sub>t\<^sub>i\<^sub>o\<^sub>n b \<longrightarrow> R' overlaps s \<longrightarrow> R overlaps s)"
+definition overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
+"overlapsAsMuchAs R b R' == (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' overlaps s ⟶ R overlaps s)"
 
 notation 
-  overlapsAsMuchAs ("_ \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>_ _" [80, 80, 80] 80)
+  overlapsAsMuchAs ("_ ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
 
-definition eq_overlapsAsMuchAs :: "'region \<Rightarrow> 'bundle \<Rightarrow> 'region \<Rightarrow> bool"  where 
-"eq_overlapsAsMuchAs R b R' == R \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R' \<and> R' \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R"
+definition eq_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
+"eq_overlapsAsMuchAs R b R' == R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ R' ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
 
 notation 
-  eq_overlapsAsMuchAs ("_ \<cong>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>_ _" [80, 80, 80] 80)
+  eq_overlapsAsMuchAs ("_ ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
 
 abbreviation
-rev_overlapsAsMuchAs :: "'region \<Rightarrow> 'bundle \<Rightarrow> 'region \<Rightarrow> bool"  ("_ \<le>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>_ _" [80, 80, 80] 80)
+rev_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  ("_ ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
 where"rev_overlapsAsMuchAs R b R' == overlapsAsMuchAs R' b R"
 
-definition more_overlapsAsMuchAs :: "'region \<Rightarrow> 'bundle \<Rightarrow> 'region \<Rightarrow> bool"  where 
-"more_overlapsAsMuchAs R b R' == R \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R' \<and> \<not>(R' \<ge>\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>b R)"
+definition more_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
+"more_overlapsAsMuchAs R b R' == R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬(R' ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
 
 notation 
-  more_overlapsAsMuchAs ("_ >\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>_ _" [80, 80, 80] 80)
+  more_overlapsAsMuchAs ("_ >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
 
 abbreviation
-less_overlapsAsMuchAs :: "'region \<Rightarrow> 'bundle \<Rightarrow> 'region \<Rightarrow> bool"  ("_ <\<^sub>o\<^sub>v\<^sub>e\<^sub>r\<^sub>l\<^sub>a\<^sub>p\<^sub>s \<^sub>_ _" [80, 80, 80] 80)
+less_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  ("_ <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
 where"less_overlapsAsMuchAs R b R' == more_overlapsAsMuchAs R' b R"
 
 (*Formalise and prove that overlapsAsMuchAs is reflexive and transitive*) (*2 marks*)
