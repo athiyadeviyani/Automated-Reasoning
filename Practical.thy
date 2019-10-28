@@ -173,15 +173,15 @@ lemma region_overlaps_itself: "R overlaps (region_to_section R)"
   oops
 
 (*Formalise and prove that isPartOf is reflexive, transitive and antisymmetric*) (*3 marks*)
-lemma isPartOf_reflexive: 
+lemma isPartOf_reflexive: "a isPartOf a"
 (*Formalise and prove that isPartOf is reflexive here*)
   oops
 
-lemma isPartOf_transitive: 
+lemma isPartOf_transitive: "(a isPartOf b ∧ b isPartOf c) ⟶ a isPartOf c"
 (*Formalise and prove that isPartOf is transitive here*)
   oops
 
-lemma isPartOf_antisymmetric: 
+lemma isPartOf_antisymmetric: "¬(a isPartOf b ⟶ b isPartOf a)"
 (*Formalise and prove that isPartOf is antisymmetric here*)
   oops
 
