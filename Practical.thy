@@ -177,8 +177,25 @@ lemma isPartOf_reflexive: "a isPartOf a"
 (*Formalise and prove that isPartOf is reflexive here*)
   oops
 
-lemma isPartOf_transitive: "(a isPartOf b ∧ b isPartOf c) ⟶ a isPartOf c"
+lemma isPartOf_transitive: 
 (*Formalise and prove that isPartOf is transitive here*)
+  assumes "a isPartOf b" and "b isPartOf c" 
+  shows "a isPartOf c"
+  proof (rule ccontr)
+    assume "¬(a isPartOf c)"
+    then have "¬(a isPartOf b)" or "¬(b isPartOf c)" 
+      oops
+
+lemma a: "(a isPartOf b ∧ b isPartOf c) ⟶ a isPartOf c"
+  apply (rule impI)
+  apply (erule conjE)
+  oops
+
+lemma trans: "a isPartOf b ⟹ b isPartOf c ⟹ a isPartOf c"
+proof -
+  fix p1 p2 assume "(∀p1. p1 ι⇩p⇩o⇩i⇩n⇩t a ⟶ p1 ι⇩p⇩o⇩i⇩n⇩t b)" and "(∀p2. p2 ι⇩p⇩o⇩i⇩n⇩t b ⟶ p2 ι⇩p⇩o⇩i⇩n⇩t c)"
+  hence "p2 ∈ p1"
+    by blast
   oops
 
 lemma isPartOf_antisymmetric: "¬(a isPartOf b ⟶ b isPartOf a)"
@@ -194,7 +211,7 @@ locale section_bundles =  incidence incidence_points_on_sections region_to_secti
   and region_to_section :: "'region ⇒ 'section" +
   fixes crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80)
   and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80) 
- assumes SC1: (*Write your formalisation of Axiom SC1 here*) (*1 mark*)
+ assumes SC1:"⟦R crossing S⟧ ⟹ R overlaps S" (*Write your formalisation of Axiom SC1 here*) (*1 mark*)
  and SI1: (*Write your formalisation of Axiom SI1 here*)     (*1 mark*)
 begin
 
