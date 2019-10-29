@@ -29,7 +29,8 @@ lemma "(P∧Q⟶R)⟶P⟶Q⟶R"
   apply (rule impI)+
   apply (erule impE)
    apply (rule conjI)
-  apply assumption+
+    apply assumption+
+  done
 
 (*3 marks*)
 lemma "¬¬P ∨ ¬P"
@@ -105,6 +106,9 @@ lemma "(∀x. P x)∨(∃x.¬P x)"
   apply (erule notE)
   apply (rule disjI1)
   apply (rule allI)
+  apply (rule not_not_p_is_p)
+  apply (rule notI)
+  apply (erule notE)
   oops
 
 (*3 marks*)
@@ -142,7 +146,27 @@ lemma "∃Bob. (drunk Bob ⟶ (∀y. drunk y))"
 
 (*4 marks*)
 lemma "¬ (∃ barber . man barber ∧ (∀ x . man x ∧ ¬shaves x x ⟷ shaves barber x ))"
-  oops
+apply (rule notI)
+apply (erule exE)
+apply (erule conjE)
+apply (erule allE)
+apply (erule iffE)
+apply (erule impE)
+apply (rule conjI)
+apply assumption
+apply (rule notI)
+apply (erule impE)
+apply assumption
+apply (erule conjE)
+apply (erule notE)
+apply assumption
+apply (erule impE)
+apply assumption
+apply (erule conjE)
+apply (erule notE)
+apply assumption
+done
+  
 
 locale incidence =
   fixes incidence_points_on_sections :: "'point ⇒ 'section ⇒ bool" (infix " ι⇩p⇩o⇩i⇩n⇩t " 80)
