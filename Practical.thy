@@ -203,13 +203,12 @@ show "∀p. p  ι⇩p⇩o⇩i⇩n⇩t  a ⟶ p  ι⇩p⇩o⇩i⇩n⇩t  c"
 qed
   
 lemma isPartOf_antisymmetric:
-  assumes "a isPartOf b" and "b isPartOf a"
+  assumes ab: "a isPartOf b" and ba: "b isPartOf a"
   shows "a = b"
 proof -
   show "a = b"
-    using assms(1) assms(2) isPartOf_def section_uniqueness by blast
+    using ab ba isPartOf_def section_uniqueness by blast
 qed
-
 
 
 end
@@ -220,34 +219,48 @@ locale section_bundles =  incidence incidence_points_on_sections region_to_secti
   and region_to_section :: "'region ⇒ 'section" +
   fixes crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80)
   and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80) 
- assumes SC1:"⟦R crossing S⟧ ⟹ R overlaps S" (*Write your formalisation of Axiom SC1 here*) (*1 mark*)
- and SI1: (*Write your formalisation of Axiom SI1 here*)     (*1 mark*)
+ assumes SC1:"∀s r. r crosses s ⟶ r overlaps s" (*Write your formalisation of Axiom SC1 here*) (*1 mark*)
+ and SI1: "∀a b. (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n a ⟷ s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b) ⟶ a = b" (*Write your formalisation of Axiom SI1 here*)     (*1 mark*)
 begin
 
 definition atLeastAsRestrictiveAs :: "'section ⇒ 'bundle ⇒ 'section ⇒ bool" where 
 (*Write your formalisation of atLeastAsRestrictiveAs here*) (*1 mark*)
+"atLeastAsRestrictiveAs s b s' = (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s isPartOf s')"
 
 notation 
   atLeastAsRestrictiveAs ("_ ≤⇩_ _" [80, 80, 80] 80)
 
 
-(*Formalise and prove that isPartOf is reflexive, transitive and antisymmetric*) (*2 marks*)
+(*Formalise and prove that atLeastAsRestrictiveAs is reflexive, transitive and antisymmetric*) (*2 marks*)
 
 (*Kulik and Eschenbach say 'The relation ≥ is reflexive, transitive and antisymmetric for a given 
 sector bundle.' So, do they mean, given that the sections under consideration are in the bundle?
 This is what we assume for reflexivity.*)
 lemma atLeastAsRestrictiveAs_reflexive: 
-  assumes "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"  shows "s ≤⇩b s"
-(*Add your proof here*)
-  oops
+  assumes "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"  shows "s ≤⇩b s" (* given: DO NOT REMOVE! *)
+proof (unfold atLeastAsRestrictiveAs_def)
+  show "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s isPartOf s"
+    by (simp add: assms isPartOf_reflexive)
+qed
 
 lemma atLeastAsRestrictiveAs_transitive: 
 (*Formalise and prove that atLeastAsRestrictiveAs is transitive*)
-  oops
+  assumes xy: "x ≤⇩b y" and yz: "y ≤⇩b z" 
+  shows "x ≤⇩b z"
+proof (unfold atLeastAsRestrictiveAs_def)
+  show "x ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ z ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ x isPartOf z"
+    using atLeastAsRestrictiveAs_def isPartOf_transitive xy yz by blast
+qed
 
 lemma atLeastAsRestrictiveAs_antisymmetric: 
-(*Formalise and prove that atLeastAsRestrictiveAs is antisymmetric*))
-  oops
+(*Formalise and prove that atLeastAsRestrictiveAs is antisymmetric*)
+  assumes xy: "x ≤⇩b y" and yx: "y ≤⇩b x" 
+  shows "x = y"
+proof - 
+  show "x = y"
+    using atLeastAsRestrictiveAs_def isPartOf_antisymmetric xy yx by auto
+qed
+
 
 end
 
@@ -257,18 +270,33 @@ locale comparison = section_bundles incidence_points_on_sections region_to_secti
   and region_to_section :: "'region ⇒ 'section" 
   and crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80) 
   and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80)+
-assumes SB2:(*Write your formalisation of Axiom SB2 here*) (*1 mark*)
+assumes SB2: "∀b s s'. (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b) ⟶ (s ≤⇩b s' ∨ s' ≤⇩b s)"
+    (*Write your formalisation of Axiom SB2 here*) (*1 mark*)
+
 begin
 
 lemma T1:(*Write your formalisation and proof of Theorem T1 here*) (*1 mark*)
+  assumes r_overlaps_s: "r overlaps s" 
+  shows "∀s'. (s ≤⇩b s' ⟶ r overlaps s')"
+proof -
+  show  "∀s'. (s ≤⇩b s' ⟶ r overlaps s')"
+    using atLeastAsRestrictiveAs_def isPartOf_def overlaps_def r_overlaps_s by auto 
+qed
 
-lemma T2:(*Write your formalisation and proof of Theorem T2 here*) (*1 mark*)
+lemma T2: (*Write your formalisation and proof of Theorem T2 here*) (*1 mark*)
+  assumes r_isincludedin_s: "r isIncludedIn s"
+  shows "∀s'. (s ≤⇩b s' ⟶ r isIncludedIn s')"
+proof - 
+  show "∀s'. s ≤⇩b s' ⟶ r isIncludedIn s'"
+    using atLeastAsRestrictiveAs_def inclusion_def isPartOf_transitive r_isincludedin_s by blast
+qed
 
 definition isCore (infix "isCoreOf" 80) where
 "s isCoreOf b = (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ (∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s'))"
 
-definition (*Write your definition of hull here*) (*1 mark*)
-
+(*Write your definition of hull here*) (*1 mark*)
+definition isHull (infix "isHullOf" 80) where
+"s isHullOf b = (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ (∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s))"
 
 end
 
