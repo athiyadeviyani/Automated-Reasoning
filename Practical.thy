@@ -121,19 +121,15 @@ lemma "(∀x. ¬ (P x ⟶ Q x)) ⟶ ¬(∃x. ¬P x ∧ Q x)"
 
 (*3 marks*)
 lemma "∃Bob. (drunk Bob ⟶ (∀y. drunk y))"
-  apply (cut_tac P = "(∀y. drunk y)" in excluded_middle)
-  apply (erule disjE)
-  apply (rule ccontr)
-  apply (erule notE)
+  apply (rule classical)
+  apply (rule exI)
+  apply (rule impI)
   apply (rule allI)
   apply (rule ccontr)
   apply (erule notE)
   apply (rule exI)
   apply (rule impI)
   apply (erule notE)
-  apply assumption
-  apply (rule exI)
-  apply (rule impI)
   apply assumption
   done
 
