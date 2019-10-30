@@ -387,8 +387,10 @@ proof -
     using overlapsAsMuchAs_def xy yz by auto
 qed
 
-lemma T3: (*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
+(*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
 formalise Kulik et al.'s reasoning*) (*11 marks*)
+lemma T3: "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟷ (∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s)"
+  oops
 
 (*In under 200 words, compare and contrast the mechanical proof that you produced with the 
 pen-and-paper proof by Kulik et al.\. In particular, indicate any reasoning, proof parts, and/or 
@@ -397,19 +399,29 @@ useful lemmas that you had to make explicit during the mechanisation but may hav
 notation. Note any parts where you had to diverge from their reasoning, and why.
 Write your answer in a comment here.*) (*4 marks*)
 
-lemma T4: (*Write your formalisation and proof of Theorem T4 here*) (*1 mark*)
+(*Write your formalisation and proof of Theorem T4 here*) (*1 mark*)
+lemma T4: "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+proof - 
+  show "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+    sorry 
+qed 
 
-lemma T5: (*Write your formalisation and structured proof of Theorem T5 here. 
-You must show it follows from T4*) (*3 marks*)
-
+(*Write your formalisation and structured proof of Theorem T5 here. You must show it follows from T4*) (*3 marks*)
+lemma T5: "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+proof - 
+  show "∀b R R'. R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    using T4 eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def by blast
+qed
 
 (********************Challenge problem****************************************)
 
-definition crossesIncludedInAsMuchAs (*Write your definition of `crosses or is included in as much
-as' here*) (*2 marks*)
+(*Write your definition of `crosses or is included in as much as' here*) (*2 marks*)
+(*If a region crosses a section or is included in a section, R ci S*)
+definition crossesIncludedInAsMuchAs :: "'region ⇒ 'section ⇒ bool" (infix "ci" 80) where
+"R ci S = (R crosses S ∨ R isIncludedIn S)"
 
-definition belongsAsMuchAs (*Write your definition of `belongs as much as here: definition D8 in
-the paper.*) (*2 marks*)
+(*Write your definition of `belongs as much as here: definition D8 in the paper.*) (*2 marks*)
+definition belongsAsMuchAs 
 
 (*Formalise and write structured proofs of Theorems T6-T8 for both crossesIncludedInAsMuchAs and
 belongsAsMuchAs*) (*14 marks*)
