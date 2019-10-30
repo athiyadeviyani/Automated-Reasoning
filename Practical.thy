@@ -99,17 +99,11 @@ lemma "(∀ x y. R x y) ⟶ (∀ x . R x x )"
 
 (*3 marks*)
 lemma "(∀x. P x)∨(∃x.¬P x)"
-  apply (rule classical)
   apply (rule disjI1)
-  apply (rule allI)
-  apply (rule classical)
-  apply (erule notE)
-  apply (rule disjI1)
-  apply (rule allI)
-  apply (rule not_not_p_is_p)
-  apply (rule notI)
-  apply (erule notE)
+  apply (rule ccontr)
+  apply (rule ccontr)
   oops
+
 
 (*3 marks*)
 lemma "(∀x. ¬ (P x ⟶ Q x)) ⟶ ¬(∃x. ¬P x ∧ Q x)"
@@ -174,7 +168,7 @@ locale incidence =
   assumes section_nonempty: "∀s. ∃p. p ι⇩p⇩o⇩i⇩n⇩t s" 
 (*Write here your axiom stating that every section has 
                                             a point incident to it*) (*2 marks*)
-  and section_uniqueness: "∀a s l. (a ι⇩p⇩o⇩i⇩n⇩t s ⟷ a ι⇩p⇩o⇩i⇩n⇩t l) ⟶ s = l" 
+  and section_uniqueness: "∀s l. (∀p. p ι⇩p⇩o⇩i⇩n⇩t s ⟷ p ι⇩p⇩o⇩i⇩n⇩t l) ⟶ s = l" 
 (*  and section_uniqueness_meta: "⟦a ι⇩p⇩o⇩i⇩n⇩t s ⟷ a ι⇩p⇩o⇩i⇩n⇩t l⟧ ⟹ s = l" *)
 (*Write here your axiom stating that ANY two sections are the same
                                       if ANY of the same points are incident to each*) (*2 marks*)
@@ -198,35 +192,26 @@ lemma region_overlaps_itself: "R overlaps (region_to_section R)"
 
 (*Formalise and prove that isPartOf is reflexive, transitive and antisymmetric*) (*3 marks*)
 lemma isPartOf_reflexive: "a isPartOf a"
-(*Formalise and prove that isPartOf is reflexive here*)
-  oops
+  by (simp add: isPartOf_def)
 
-lemma isPartOf_transitive: 
-(*Formalise and prove that isPartOf is transitive here*)
-  assumes "a isPartOf b" and "b isPartOf c" 
-  shows "a isPartOf c"
-  proof (rule ccontr)
-    assume "¬(a isPartOf c)"
-    then have "¬(a isPartOf b)" or "¬(b isPartOf c)" 
-      oops
-
-lemma a: "(a isPartOf b ∧ b isPartOf c) ⟶ a isPartOf c"
-  apply (rule impI)
-  apply (erule conjE)
-  oops
-
-lemma trans: "a isPartOf b ⟹ b isPartOf c ⟹ a isPartOf c"
+lemma isPartOf_transitive:
+  assumes ab: "a isPartOf b" and bc: "b isPartOf c"
+  shows ac: "a isPartOf c"
+proof (unfold isPartOf_def)
+show "∀p. p  ι⇩p⇩o⇩i⇩n⇩t  a ⟶ p  ι⇩p⇩o⇩i⇩n⇩t  c"
+    using ab bc isPartOf_def by blast
+qed
+  
+lemma isPartOf_antisymmetric:
+  assumes "a isPartOf b" and "b isPartOf a"
+  shows "a = b"
 proof -
-  fix p1 p2 assume "(∀p1. p1 ι⇩p⇩o⇩i⇩n⇩t a ⟶ p1 ι⇩p⇩o⇩i⇩n⇩t b)" and "(∀p2. p2 ι⇩p⇩o⇩i⇩n⇩t b ⟶ p2 ι⇩p⇩o⇩i⇩n⇩t c)"
-  hence "p2 ∈ p1"
-    by blast
-  oops
+  show "a = b"
+    using assms(1) assms(2) isPartOf_def section_uniqueness by blast
+qed
 
-lemma isPartOf_antisymmetric: "¬(a isPartOf b ⟶ b isPartOf a)"
-(*Formalise and prove that isPartOf is antisymmetric here*)
-  oops
 
- 
+
 end
 
 
