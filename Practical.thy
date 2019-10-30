@@ -194,6 +194,14 @@ lemma region_overlaps_itself: "R overlaps (region_to_section R)"
 lemma isPartOf_reflexive: "a isPartOf a"
   by (simp add: isPartOf_def)
 
+lemma ipo_ref: 
+  assumes "∀p. p ι⇩p⇩o⇩i⇩n⇩t a"
+  shows "a isPartOf a" 
+proof - 
+  show "a isPartOf a"
+    by (simp add: isPartOf_def)
+qed
+
 lemma isPartOf_transitive:
   assumes ab: "a isPartOf b" and bc: "b isPartOf c"
   shows ac: "a isPartOf c"
@@ -306,21 +314,31 @@ locale crossing_sector = comparison incidence_points_on_sections
 and region_to_section :: "'region ⇒ 'section" 
 and crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80)  
 and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80) +
-assumes SC2: (*Write your formalisation of Axiom SC2 here*) (*1 mark*)
+assumes SC2: "∀b S R. (R crosses S ⟶ (∀S. (S' ≤⇩b S ⟶ R crosses S')))"
+(*Write your formalisation of Axiom SC2 here*) (*1 mark*)
 begin
 
 
 lemma overlaps_core: (*Write your formalisation and structured proof of the remark `If a region 
 overlaps the core of a section bundle then it overlaps every section of the section bundle'*) 
 (*4 marks*)
+  assumes "r overlaps s" and "s isCoreOf b"
+  shows "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ r overlaps s'"
+  oops
 
 lemma crosses_hull: (*Write your formalisation and structured proof of the remark `If a region 
 crosses the hull of a section bundle then it crosses every sector of the section bundle'*) 
 (*4 marks*)
+  assumes "r overlaps s" and "s isHullOf b"
+  shows "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ r overlaps s'"
+  oops
 
 lemma not_overlap_hull:  (*Write your formalisation and structured proof of the remark `If a region 
 does not overlap the hull of a section bundle, it does not overlap any of its sections'*) 
 (*4 marks*)
+  assumes "¬(r overlaps s)" and "s isHullOf b"
+  shows "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ ¬(r overlaps s')"
+  oops
 
 definition overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
 "overlapsAsMuchAs R b R' == (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' overlaps s ⟶ R overlaps s)"
@@ -352,15 +370,22 @@ where"less_overlapsAsMuchAs R b R' == more_overlapsAsMuchAs R' b R"
 
 lemma overlapsAsMuchAs_reflexive:
 (*Write your formalisation and proof that overlapsAsMuchAs is reflexive here*) 
+  assumes "(region_to_section R) ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"  
+  shows "R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+proof -
+  show "R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+    by (simp add: overlapsAsMuchAs_def)
+qed
+
 
 lemma overlapsAsMuchAs_transitive:
 (*Write your formalisation and proof that overlapsAsMuchAs is transitive here*)
-
-lemma T4: (*Write your formalisation and proof of Theorem T4 here*) (*1 mark*)
-
-lemma T5: (*Write your formalisation and structured proof of Theorem T5 here. 
-You must show it follows from T4*) (*3 marks*)
-
+  assumes xy: "X ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b Y" and yz: "Y ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b Z"
+  shows xz: "X ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b Z"
+proof - 
+  show "X ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b Z"
+    using overlapsAsMuchAs_def xy yz by auto
+qed
 
 lemma T3: (*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
 formalise Kulik et al.'s reasoning*) (*11 marks*)
@@ -371,6 +396,12 @@ useful lemmas that you had to make explicit during the mechanisation but may hav
  or assumed by the pen-and-paper proof. Also highlight any inaccuracies in their language or 
 notation. Note any parts where you had to diverge from their reasoning, and why.
 Write your answer in a comment here.*) (*4 marks*)
+
+lemma T4: (*Write your formalisation and proof of Theorem T4 here*) (*1 mark*)
+
+lemma T5: (*Write your formalisation and structured proof of Theorem T5 here. 
+You must show it follows from T4*) (*3 marks*)
+
 
 (********************Challenge problem****************************************)
 
