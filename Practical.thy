@@ -53,8 +53,7 @@ lemma "(P∨R)⟷(¬(¬P∧ ¬R))"
     apply assumption
    apply (rule notI)
    apply (erule conjE)
-   apply (erule notE)
-   apply (erule notE)
+   apply (erule notE)+
    apply assumption
 
  apply (rule classical)
@@ -151,16 +150,7 @@ apply (erule impE)
 apply (rule conjI)
 apply assumption
 apply (rule notI)
-apply (erule impE)
-apply assumption
-apply (erule conjE)
-apply (erule notE)
-apply assumption
-apply (erule impE)
-apply assumption
-apply (erule conjE)
-apply (erule notE)
-apply assumption
+apply (erule impE, assumption, erule conjE, erule notE, assumption)+
 done
   
 
@@ -422,13 +412,55 @@ proof -
     using overlapsAsMuchAs_def xy yz by auto
 qed
 
+(* SB2: "∀b s s'. (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b) ⟶ (s ≤⇩b s' ∨ s' ≤⇩b s)" *)
+
+(* lemma T1: 
+  assumes r_overlaps_s: "r overlaps s" 
+  shows "∀s'. (s ≤⇩b s' ⟶ r overlaps s')" *)
+
 (*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
 formalise Kulik et al.'s reasoning*) (*11 marks*)
-lemma T3: "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟷ (∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s)"
-proof - 
-  show "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟷ (∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s)"
-    sorry 
-qed
+lemma T3: "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟷ (∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬( R' overlaps s))"
+proof (rule allI)
+
+(* DIRECTION <-- *)
+  fix s 
+  assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r_overlaps_s: "R overlaps s" and r'_notoverlaps_s: "¬( R' overlaps s)"
+  have s_s'_isPartOf: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s isPartOf s' ∨ s' isPartOf s"
+    using SB2 atLeastAsRestrictiveAs_def s_inbundle_b by auto
+
+ (* assume s isPartOf s' *)
+  assume s'_inbundle_b: "s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and s_isPartOf_s': "s isPartOf s'"
+  have s_atleastasrestrictiveas_s': "s ≤⇩b s'"
+    by (simp add: atLeastAsRestrictiveAs_def s'_inbundle_b s_inbundle_b s_isPartOf_s')
+  have rest_implies_r_o_s': "∀s'. (s ≤⇩b s' ⟶ R overlaps s')"
+    using T1 r_overlaps_s by blast
+  (* then have "R overlaps s'" *) 
+  have r_overlaps_s': "R overlaps s'"
+    by (simp add: rest_implies_r_o_s' s_atleastasrestrictiveas_s')
+
+  (* assume s' isPartOf s *)
+  assume s'_isPartOf_s: "s' isPartOf s" 
+  have s'_atleastasrestrictiveas_s: "s' ≤⇩b s"
+    by (simp add: atLeastAsRestrictiveAs_def s'_inbundle_b s'_isPartOf_s s_inbundle_b)
+  (* then have "¬(R' overlaps s')" *) 
+  have r'_notoverlaps_s': "¬(R' overlaps s')"
+    using T1 r'_notoverlaps_s s'_atleastasrestrictiveas_s by blast
+
+  (* from previous, have "R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" *)
+  from r_overlaps_s' r'_notoverlaps_s' have r_oama_r': "R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    using SB2 T1 overlapsAsMuchAs_def s'_inbundle_b by blast
+
+  (* therefore from r'_notoverlaps_s we have "R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" *)
+  from r'_notoverlaps_s have "R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    using more_overlapsAsMuchAs_def overlapsAsMuchAs_def r'_notoverlaps_s' r_oama_r' r_overlaps_s' s'_inbundle_b by blast
+
+  oops
+
+
+
+
+
 
 (*In under 200 words, compare and contrast the mechanical proof that you produced with the 
 pen-and-paper proof by Kulik et al.\. In particular, indicate any reasoning, proof parts, and/or 
@@ -438,18 +470,23 @@ notation. Note any parts where you had to diverge from their reasoning, and why.
 Write your answer in a comment here.*) (*4 marks*)
 
 (*Write your formalisation and proof of Theorem T4 here*) (*1 mark*)
-lemma T4: "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+lemma T4: "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
 proof - 
-  show "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+  show "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     using T3 eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def overlapsAsMuchAs_def by auto 
 qed 
 
 (*Write your formalisation and structured proof of Theorem T5 here. You must show it follows from T4*) (*3 marks*)
-lemma T5: "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+(* lemma T5: "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
 proof - 
   show "∀b R R'. R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     using T4 eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def by blast
-qed
+qed *) 
+lemma T5: "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+proof (unfold overlapsAsMuchAs_def, rule allI)
+  oops
+  
+
 
 (********************Challenge problem****************************************)
 
