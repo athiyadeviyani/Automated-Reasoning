@@ -345,7 +345,7 @@ qed
 lemma crosses_hull: (*Write your formalisation and structured proof of the remark `If a region 
 crosses the hull of a section bundle then it crosses every sector of the section bundle'*) 
 (*4 marks*)
-  assumes r_overlaps_s: "r crosses s" and s_isHullOf_b: "s isHullOf b"
+  assumes r_crosses_s: "r crosses s" and s_isHullOf_b: "s isHullOf b"
   shows "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ r crosses s'"
 proof (rule allI, rule impI)
   fix s'
@@ -354,19 +354,26 @@ proof (rule allI, rule impI)
     using isHull_def s_isHullOf_b by blast
   have s'_atleastasrestrictiveas_s: "s' ≤⇩b s"
     by (simp add: s'_incidence_b s_isH_b)
-  have "∀b s r. (r crosses s ⟶ (∀s. (s' ≤⇩b s ⟶ r crosses s')))"
-    using SC2 by blast
   show "r crosses s'"
-    using SC2 r_overlaps_s s'_atleastasrestrictiveas_s by blast
+    using SC2 r_crosses_s s'_atleastasrestrictiveas_s by blast
 qed
 
 
 lemma not_overlap_hull:  (*Write your formalisation and structured proof of the remark `If a region 
 does not overlap the hull of a section bundle, it does not overlap any of its sections'*) 
 (*4 marks*)
-  assumes "¬(r overlaps s)" and "s isHullOf b"
+  assumes r_not_overlaps_s: "¬(r overlaps s)" and s_isHullOf_b: "s isHullOf b"
   shows "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ ¬(r overlaps s')"
-  oops
+proof (rule allI, rule impI)
+  fix s'
+  assume s'_incidence_b: "s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" 
+  have s_isH_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ (∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s)"
+    using isHull_def s_isHullOf_b by blast
+  have s'_atleastasrestrictiveas_s: "s' ≤⇩b s"
+    by (simp add: s'_incidence_b s_isH_b)
+  show "¬(r overlaps s')"
+    using T1 r_not_overlaps_s s'_atleastasrestrictiveas_s by blast
+qed
 
 definition overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
 "overlapsAsMuchAs R b R' == (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' overlaps s ⟶ R overlaps s)"
