@@ -423,7 +423,7 @@ formalise Kulik et al.'s reasoning*) (*11 marks*)
 lemma T3: "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟷ (∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬( R' overlaps s))"
 proof (rule allI)
 
-(* DIRECTION <-- *)
+(* DIRECTION ← *)
   fix s 
   assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r_overlaps_s: "R overlaps s" and r'_notoverlaps_s: "¬( R' overlaps s)"
   have s_s'_isPartOf: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s isPartOf s' ∨ s' isPartOf s"
@@ -454,6 +454,14 @@ proof (rule allI)
   (* therefore from r'_notoverlaps_s we have "R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" *)
   from r'_notoverlaps_s have "R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     using more_overlapsAsMuchAs_def overlapsAsMuchAs_def r'_notoverlaps_s' r_oama_r' r_overlaps_s' s'_inbundle_b by blast
+
+(* DIRECTION → *)
+  assume " R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" 
+  have " (∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬( R' overlaps s))"
+    using r'_notoverlaps_s' r_overlaps_s' s'_inbundle_b by blast
+
+  have "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟷ (∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬( R' overlaps s))"
+    using ‹R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'› more_overlapsAsMuchAs_def r_oama_r' by blast
 
   oops
 
