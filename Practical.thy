@@ -11,6 +11,7 @@ lemma "A∨A ⟶ A"
    apply assumption+
   done
 
+
 (*1 mark*)
 lemma "(P⟶R)⟶(¬P∨R)"
   apply (rule impI)
@@ -184,7 +185,11 @@ definition overlaps ::"'region ⇒ 'section ⇒ bool"(infix "overlaps" 80) where
 
 lemma region_overlaps_itself: "R overlaps (region_to_section R)"
 (*Write your structured proof here*) (*2 marks*)
-  oops
+proof (unfold overlaps_def)
+  from section_nonempty obtain p where "p ι⇩p⇩o⇩i⇩n⇩t region_to_section R" by blast
+  then show "∃p. p  ι⇩p⇩o⇩i⇩n⇩t region_to_section R ∧ p  ι⇩p⇩o⇩i⇩n⇩t region_to_section R"
+    by blast
+qed  
 
 (*Formalise and prove that isPartOf is reflexive, transitive and antisymmetric*) (*3 marks*)
 lemma isPartOf_reflexive: "a isPartOf a"
