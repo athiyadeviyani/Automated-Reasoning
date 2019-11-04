@@ -100,9 +100,19 @@ lemma "(∀ x y. R x y) ⟶ (∀ x . R x x )"
 
 (*3 marks*)
 lemma "(∀x. P x)∨(∃x.¬P x)"
-  apply (rule disjI1)
-  apply (rule ccontr)
-  apply (rule ccontr)
+  apply (rule disjCI)
+  apply (rule allI)
+  apply (rule classical)
+  apply (erule notE)
+  apply (rule exI)
+  apply assumption
+  done
+
+
+lemma "(∀x. P x)∨(∃x.¬P x)"
+  apply (rule classical)
+  apply (rule disjI1 notI)+
+  apply (rule allI)
   oops
 
 
@@ -323,9 +333,19 @@ begin
 lemma overlaps_core: (*Write your formalisation and structured proof of the remark `If a region 
 overlaps the core of a section bundle then it overlaps every section of the section bundle'*) 
 (*4 marks*)
-  assumes "r overlaps s" and "s isCoreOf b"
+  assumes r_overlaps_s: "r overlaps s" and s_isCoreOf_b: "s isCoreOf b"
   shows "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ r overlaps s'"
-  oops
+proof (rule allI, rule impI)
+  fix s'
+  assume s_incidence_b: "s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" 
+  have s_isC_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ (∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s')"
+    using isCore_def s_isCoreOf_b by blast 
+  have s_atleastasrestrictiveas_s': "s ≤⇩b s'"
+    using s_incidence_b s_isC_b by blast
+  from r_overlaps_s T1 s_atleastasrestrictiveas_s'
+  show "r overlaps s'" by blast 
+qed
+
 
 lemma crosses_hull: (*Write your formalisation and structured proof of the remark `If a region 
 crosses the hull of a section bundle then it crosses every sector of the section bundle'*) 
