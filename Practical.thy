@@ -100,20 +100,15 @@ lemma "(∀ x y. R x y) ⟶ (∀ x . R x x )"
 
 (*3 marks*)
 lemma "(∀x. P x)∨(∃x.¬P x)"
-  apply (rule disjCI)
-  apply (rule allI)
-  apply (rule classical)
-  apply (erule notE)
-  apply (rule exI)
-  apply assumption
-  done
-
-
-lemma "(∀x. P x)∨(∃x.¬P x)"
   apply (rule classical)
   apply (rule disjI1 notI)+
   apply (rule allI)
-  oops
+  apply (rule classical)
+  apply (erule notE)
+  apply (rule disjI2)
+  apply (rule exI)
+  apply assumption
+  done
 
 
 (*3 marks*)
