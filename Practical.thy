@@ -541,10 +541,29 @@ notation
 (*Formalise and write structured proofs of Theorems T6-T8 for both crossesIncludedInAsMuchAs and
 belongsAsMuchAs*) (*14 marks*)
 
+(* SC1 assms(1) assms(2) crossesIncludedInAsMuchAs_def not_overlap_hull *) 
 lemma T6_crossesIncludedInAsMuchAs:
-  assumes "s isHullOf b" and "¬(R overlaps s)"
-  shows "R' ≥⇩c⇩i ⇩b R" 
-  oops
+  assumes s_isHullOf_b: "s isHullOf b"
+  shows "∀b R. ¬(R overlaps s) ⟶ (∀R'. R' ≥⇩c⇩i ⇩b R)" 
+proof (unfold crossesIncludedInAsMuchAs_def, (rule allI)+, 
+rule impI, 
+(rule allI)+, 
+(rule impI)+)
+(*proof ((rule allI)+, rule impI, (rule allI)+)*)
+  fix b R R' t
+  (*assume "¬(R overlaps s)" and "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and "R crosses s"
+  have "R' crosses s"
+    using SC1 ‹R crosses s› ‹¬ R overlaps s› by blast*)
+  assume "¬ R overlaps s" and "t ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and "R crosses t" 
+  have "R overlaps t"
+    by (simp add: SC1 ‹R crosses t›)
+  have "(∀t. s ≤⇩b t ⟶ R crosses s)"
+    using SC2 ‹R crosses t› by blast
+  have "(∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b t)"
+    using SC1 SC2 ‹R crosses t› ‹¬ R overlaps s› isHull_def s_isHullOf_b by blast
+  show "R' crosses t"
+    using SC1 SC2 ‹R crosses t› ‹¬ R overlaps s› isHull_def s_isHullOf_b by blast
+  qed
 
 
 lemma T6_belongsAsMuchAs:
