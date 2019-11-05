@@ -421,31 +421,41 @@ qed
 (*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
 formalise Kulik et al.'s reasoning*) (*11 marks*)
 lemma T3: "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟷ (∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬( R' overlaps s))"
-proof (rule allI)
+
+proof ((rule allI)+, rule iffI)
 
 (* DIRECTION ← *)
-  fix s 
-  assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r_overlaps_s: "R overlaps s" and r'_notoverlaps_s: "¬( R' overlaps s)"
+  fix b R R'
+
+  assume a: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧  R overlaps s ∧ ¬ R' overlaps s" 
+  from a obtain s where s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r_overlaps_s: "R overlaps s" and r'_notoverlaps_s: "¬( R' overlaps s)"
+    by blast
+
+  (* assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r_overlaps_s: "R overlaps s" and r'_notoverlaps_s: "¬( R' overlaps s)"*)
   have s_s'_isPartOf: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s isPartOf s' ∨ s' isPartOf s"
     using SB2 atLeastAsRestrictiveAs_def s_inbundle_b by auto
+  (* consider "s isPartOf s'" | "s' isPartOf s"
 
- (* assume s isPartOf s' *)
-  assume s'_inbundle_b: "s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and s_isPartOf_s': "s isPartOf s'"
-  have s_atleastasrestrictiveas_s': "s ≤⇩b s'"
-    by (simp add: atLeastAsRestrictiveAs_def s'_inbundle_b s_inbundle_b s_isPartOf_s')
-  have rest_implies_r_o_s': "∀s'. (s ≤⇩b s' ⟶ R overlaps s')"
-    using T1 r_overlaps_s by blast
-  (* then have "R overlaps s'" *) 
-  have r_overlaps_s': "R overlaps s'"
-    by (simp add: rest_implies_r_o_s' s_atleastasrestrictiveas_s')
+    then show "R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" *)
 
-  (* assume s' isPartOf s *)
-  assume s'_isPartOf_s: "s' isPartOf s" 
-  have s'_atleastasrestrictiveas_s: "s' ≤⇩b s"
-    by (simp add: atLeastAsRestrictiveAs_def s'_inbundle_b s'_isPartOf_s s_inbundle_b)
-  (* then have "¬(R' overlaps s')" *) 
-  have r'_notoverlaps_s': "¬(R' overlaps s')"
-    using T1 r'_notoverlaps_s s'_atleastasrestrictiveas_s by blast
+
+   (* assume s isPartOf s' *)
+    assume s'_inbundle_b: "s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and s_isPartOf_s': "s isPartOf s'"
+    have s_atleastasrestrictiveas_s': "s ≤⇩b s'"
+      by (simp add: atLeastAsRestrictiveAs_def s'_inbundle_b s_inbundle_b s_isPartOf_s')
+    have rest_implies_r_o_s': "∀s'. (s ≤⇩b s' ⟶ R overlaps s')"
+      using T1 r_overlaps_s by blast
+    (* then have "R overlaps s'" *) 
+    have r_overlaps_s': "R overlaps s'"
+      by (simp add: rest_implies_r_o_s' s_atleastasrestrictiveas_s')
+  
+    (* assume s' isPartOf s *)
+    assume s'_isPartOf_s: "s' isPartOf s" 
+    have s'_atleastasrestrictiveas_s: "s' ≤⇩b s"
+      by (simp add: atLeastAsRestrictiveAs_def s'_inbundle_b s'_isPartOf_s s_inbundle_b)
+    (* then have "¬(R' overlaps s')" *) 
+    have r'_notoverlaps_s': "¬(R' overlaps s')"
+      using T1 r'_notoverlaps_s s'_atleastasrestrictiveas_s by blast
 
   (* from previous, have "R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" *)
   from r_overlaps_s' r'_notoverlaps_s' have r_oama_r': "R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
@@ -455,6 +465,7 @@ proof (rule allI)
   from r'_notoverlaps_s have "R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     using more_overlapsAsMuchAs_def overlapsAsMuchAs_def r'_notoverlaps_s' r_oama_r' r_overlaps_s' s'_inbundle_b by blast
 
+   
 (* DIRECTION → *)
   assume " R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" 
   have " (∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬( R' overlaps s))"
@@ -498,28 +509,68 @@ proof (unfold overlapsAsMuchAs_def, rule allI)
 
 (********************Challenge problem****************************************)
 
-(*Write your definition of `crosses or is included in as much as' here*) (*2 marks*)
-(*If a region crosses a section or is included in a section, R ci S*)
-definition crossesIncludedInAsMuchAs :: "'region ⇒ 'section ⇒ bool" (infix "ci" 80) where
+(*Write your definition of `a region crosses or is included in a section.` here*) (*2 marks*) 
+definition crossesOrIncludedIn :: "'region ⇒ 'section ⇒ bool" (infix "ci" 80) where
 "R ci S = (R crosses S ∨ R isIncludedIn S)"
 
+(* 
+definition overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
+"overlapsAsMuchAs R b R' == (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' overlaps s ⟶ R overlaps s)"
+
+notation 
+  overlapsAsMuchAs ("_ ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
+
+*) 
+
+(*Write your definition of `crosses or is included in as much as' here*) (*2 marks*)
+(*If a region crosses a section or is included in a section, R ci S*)
+definition crossesIncludedInAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool" where
+"crossesIncludedInAsMuchAs R b R' = (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' crosses s ⟶ R crosses s)"
+
+notation 
+  crossesIncludedInAsMuchAs ("_ ≥⇩c⇩i ⇩_ _" [80, 80, 80] 80)
+
+
 (*Write your definition of `belongs as much as here: definition D8 in the paper.*) (*2 marks*)
-definition belongsAsMuchAs 
+definition belongsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool" where
+"belongsAsMuchAs R b R' = (R ≥⇩c⇩i ⇩b R' ∧ R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R')"
+
+notation 
+  belongsAsMuchAs ("_ ≥⇩_ _" [80, 80, 80] 80)
 
 (*Formalise and write structured proofs of Theorems T6-T8 for both crossesIncludedInAsMuchAs and
 belongsAsMuchAs*) (*14 marks*)
 
 lemma T6_crossesIncludedInAsMuchAs:
+  assumes "s isHullOf b" and "¬(R overlaps s)"
+  shows "R' ≥⇩c⇩i ⇩b R" 
+  oops
+
 
 lemma T6_belongsAsMuchAs:
+  assumes "s isHullOf b" and "¬(R overlaps s)"
+  shows "R' ≥⇩b R" 
+  oops
 
 lemma T7_crossesIncludedInAsMuchAs:
+  assumes "s isCoreOf b" and "R isIncludedIn s" 
+  shows "R ≥⇩c⇩i ⇩b R'" 
+  oops
 
 lemma T7_belongsAsMuchAs:
+  assumes "s isCoreOf b" and "R isIncludedIn s"
+  shows "R ≥⇩b R'" 
+  oops
 
 lemma T8_crossesIncludedInAsMuchAs:
+  assumes "s isHullOf b" and "R crosses s"
+  shows "R ≥⇩c⇩i ⇩b R'" 
+  oops
 
 lemma T8_belongsAsMuchAs:
+  assumes "s isHullOf b" and "R crosses s"
+  shows "R ≥⇩b R'"
+  oops
 
 end
 
