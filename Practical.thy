@@ -684,7 +684,7 @@ proof ((rule allI)+, rule impI, rule allI)
 qed
 qed
 
-lemma T8_crossesIncludedInAsMuchAs_try: "∀b R. R crosses s ∧ s isHullOf b ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')"
+lemma T8_crossesIncludedInAsMuchAs: "∀b R. R crosses s ∧ s isHullOf b ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')"
 proof ((rule allI)+, rule impI, rule allI)
   fix b R R'
   assume assm: "R crosses s ∧ s isHullOf b"
@@ -698,30 +698,25 @@ proof ((rule allI)+, rule impI, rule allI)
 qed
 
 
-lemma T8_crossesIncludedInAsMuchAs:
-  assumes a: "s isHullOf b"
-  shows "∀b R. R crosses s ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')"
+lemma T8_belongsAsMuchAs: "∀b R. R crosses s ∧ s isHullOf b ⟶ (∀R'. R ≥⇩b R')"
 proof ((rule allI)+, rule impI, rule allI)
   fix b R R'
-  assume "R crosses s"
-  show "R crosses s ⟹  R ≥⇩c⇩i ⇩b R'"
-    using SB2 SC2 crossesIncludedInAsMuchAs_def by blast
-qed
-
-lemma T8_belongsAsMuchAs:
-  assumes "s isHullOf b"
-  shows "∀b R. R crosses s ⟶ (∀R'. R ≥⇩b R')"
-proof -
-  show "∀b R. R crosses s ⟶ (∀R'. R ≥⇩b R')"
-  proof (unfold belongsAsMuchAs_def, (rule allI)+, rule impI, rule allI)
-    fix b R R'
-    assume "R crosses s"
-    have r_ci_b: "R ≥⇩c⇩i ⇩b R'"
-      using T8_crossesIncludedInAsMuchAs ‹R crosses s› assms by blast
-    have r_mob_r': "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
-      by (meson SC1 SC2 ‹R crosses s› atLeastAsRestrictiveAs_reflexive overlapsAsMuchAs_def)
-    show "R crosses s ⟹ R ≥⇩c⇩i ⇩b R' ∧ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
-      using r_ci_b r_mob_r' by blast
+  assume assm: "R crosses s ∧ s isHullOf b"
+  show "R ≥⇩b R'"
+  proof (unfold belongsAsMuchAs_def)
+    have r_cib_r': "R ≥⇩c⇩i ⇩b R'"
+      using T8_crossesIncludedInAsMuchAs assm by blast
+    have r'_ob_r: "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R" 
+    proof (unfold overlapsAsMuchAs_def, rule allI, (rule impI)+)
+      fix s
+      assume s_in_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r'_o_s: "R' overlaps s"
+      have r_c_s: "R crosses s"
+        using assm crosses_hull s_in_b by blast
+      show "R overlaps s"
+        using SC1 r_c_s by blast
+    qed
+    show "R ≥⇩c⇩i ⇩b R' ∧ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+      using r'_ob_r r_cib_r' by blast
   qed
 qed
 
