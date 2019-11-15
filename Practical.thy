@@ -412,12 +412,6 @@ proof -
     using overlapsAsMuchAs_def xy yz by auto
 qed
 
-(* SB2: "∀b s s'. (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b) ⟶ (s ≤⇩b s' ∨ s' ≤⇩b s)" *)
-
-(* lemma T1: 
-  assumes r_overlaps_s: "r overlaps s" 
-  shows "∀s'. (s ≤⇩b s' ⟶ r overlaps s')" *)
-
 
 
 (*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
@@ -526,10 +520,10 @@ notation. Note any parts where you had to diverge from their reasoning, and why.
 Write your answer in a comment here.*) (*4 marks*)
 
 (*Write your formalisation and proof of Theorem T4 here*) (*1 mark*)
-lemma T4: "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+lemma T4: "∀b R R'.  R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
 proof - 
-  show "∀b R R'.  R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-    using T3 eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def overlapsAsMuchAs_def by auto 
+  show "∀b R R'.  R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    using T3 eq_overlapsAsMuchAs_def overlapsAsMuchAs_def by auto 
 qed 
 
 
@@ -549,19 +543,61 @@ qed *)
 "more_overlapsAsMuchAs R b R' == R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬(R' ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)" *) 
 
 lemma T5: "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-proof (unfold overlapsAsMuchAs_def eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def, (rule allI)+, (rule disjI1), rule allI, (rule impI)+)
-  fix b R R' s
-  assume s_lsection_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r'_overlaps_s: "R' overlaps s"
-  from T4 s_lsection_b r'_overlaps_s have "R overlaps s"
-    oops
+proof (rule allI)+
+  fix b R R'
+  have "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∨  R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    by (simp add: T4)
+  from this consider "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R" | "R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" | "R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    by blast
+  then have f: "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R')"
+
+  proof (cases)
+
+    assume "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+    have "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R')"
+      using ‹R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R› more_overlapsAsMuchAs_def by blast
+    show subgoal1: "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ⟹ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+      by (simp add: ‹R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'›)
+
+  next
+
+    assume "R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    have "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R')"
+      using ‹R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'› eq_overlapsAsMuchAs_def by auto
+    show subgoal2: "R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟹ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+      by (simp add: ‹R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'›)
+
+  next
+
+    assume "R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    have "(R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
+      using ‹R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'› more_overlapsAsMuchAs_def by blast
+    show "R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟹
+    R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧
+    R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨
+    R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧
+    ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+      sorry
+  qed
+  oops
+
+    
+
+
                     
 lemma T52: "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-proof (unfold overlapsAsMuchAs_def eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def, (rule allI)+, (rule disjI1), rule allI, (rule impI)+)
-  fix b R R' s
-  assume s_lsection_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r'_overlaps_s: "R' overlaps s"
-  show "R overlaps s"
-    by (metis T4 eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def overlapsAsMuchAs_def r'_overlaps_s s_lsection_b)
-qed
+proof - 
+  show "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    using T4 eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def by blast
+  oops
+
+lemma T53: "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+proof (rule allI)+
+  fix b R R'
+  have "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∨  R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    by (simp add: T4)
+  have "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+    oops
 
 
 (********************Challenge problem****************************************)
@@ -632,12 +668,11 @@ proof (unfold belongsAsMuchAs_def overlapsAsMuchAs_def , rule allI, rule allI, r
   fix b R R'
   assume "¬ R overlaps s"
 
-  show "∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n
-           b ⟶
-           R crosses s ⟶
-           R' crosses s"
+
+  have "∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R crosses s ⟶ R' crosses s"
     using SC1 SC2 ‹¬ R overlaps s› assms(1) isHull_def by blast
-  show "∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n
+
+    have "∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n
            b ⟶
            R overlaps s ⟶
            R' overlaps s"
