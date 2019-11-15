@@ -413,7 +413,6 @@ proof -
 qed
 
 
-
 (*Write your formalisation and structured proof of Theorem T3 here. You must attempt to 
 formalise Kulik et al.'s reasoning*) (*11 marks*)
 lemma T3: "∀b R R'.  R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟷ (∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬( R' overlaps s))"
@@ -525,22 +524,6 @@ proof -
   show "∀b R R'.  R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     using T3 eq_overlapsAsMuchAs_def overlapsAsMuchAs_def by auto 
 qed 
-
-
-(*Write your formalisation and structured proof of Theorem T5 here. You must show it follows from T4*) (*3 marks*)
-(* lemma T5: "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-proof - 
-  show "∀b R R'. R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-    using T4 eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def by blast
-qed *) 
-
-(*  by (meson T4 ‹R' overlaps s› ‹s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b› eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def overlapsAsMuchAs_def)  *) 
-
-(* definition eq_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
-"eq_overlapsAsMuchAs R b R' == R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ R' ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R" *)
-
-(* definition more_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
-"more_overlapsAsMuchAs R b R' == R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬(R' ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)" *) 
 
 lemma T5: "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
 proof (rule allI)+
@@ -701,14 +684,19 @@ proof ((rule allI)+, rule impI, rule allI)
 qed
 qed
 
-
-lemma T8_crossesIncludedInAsMuchAs_try:
-  assumes "s isHullOf b" and "R crosses s"
-  shows "R ≥⇩c⇩i ⇩b R'" 
-proof - 
+lemma T8_crossesIncludedInAsMuchAs_try: "∀b R. R crosses s ∧ s isHullOf b ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')"
+proof ((rule allI)+, rule impI, rule allI)
+  fix b R R'
+  assume assm: "R crosses s ∧ s isHullOf b"
   show "R ≥⇩c⇩i ⇩b R'"
-    using assms(1) assms(2) crossesIncludedInAsMuchAs_def crosses_hull by blast 
-  oops
+  proof (unfold crossesIncludedInAsMuchAs_def, rule allI, (rule impI)+)
+    fix s
+    assume s_in_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r'_c_s: "R' crosses s"
+    show "R crosses s"
+      using assm crosses_hull s_in_b by blast
+  qed
+qed
+
 
 lemma T8_crossesIncludedInAsMuchAs:
   assumes a: "s isHullOf b"
