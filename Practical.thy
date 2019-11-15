@@ -601,7 +601,6 @@ notation
 (*Formalise and write structured proofs of Theorems T6-T8 for both crossesIncludedInAsMuchAs and
 belongsAsMuchAs*) (*14 marks*)
 
-(* SC1 assms(1) assms(2) crossesIncludedInAsMuchAs_def not_overlap_hull *) 
 lemma T6_crossesIncludedInAsMuchAs:
   assumes s_isHullOf_b: "s isHullOf b"
   shows "∀b R. ¬(R overlaps s) ⟶ (∀R'. R' ≥⇩c⇩i ⇩b R)" 
