@@ -187,10 +187,7 @@ proof (unfold overlaps_def)
 qed  
 
 (*Formalise and prove that isPartOf is reflexive, transitive and antisymmetric*) (*3 marks*)
-lemma isPartOf_reflexive: "a isPartOf a"
-  by (simp add: isPartOf_def)
-
-lemma ipo_ref: 
+lemma isPartOf_reflexive:
   assumes "∀p. p ι⇩p⇩o⇩i⇩n⇩t a"
   shows "a isPartOf a" 
 proof - 
@@ -577,7 +574,7 @@ definition crossesOrIncludedIn :: "'region ⇒ 'section ⇒ bool" (infix "ci" 80
 (*Write your definition of `crosses or is included in as much as' here*) (*2 marks*)
 (*If a region crosses a section or is included in a section, R ci S*)
 definition crossesIncludedInAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool" where
-"crossesIncludedInAsMuchAs R b R' = (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ (R' crosses s ⟶ R crosses s))"
+"crossesIncludedInAsMuchAs R b R' = (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' crosses s ⟶ R crosses s)"
 
 notation 
   crossesIncludedInAsMuchAs ("_ ≥⇩c⇩i ⇩_ _" [80, 80, 80] 80)
