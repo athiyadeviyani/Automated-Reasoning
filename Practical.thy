@@ -622,117 +622,83 @@ belongsAsMuchAs*) (*14 marks*)
 lemma T6_crossesIncludedInAsMuchAs:
   assumes s_isHullOf_b: "s isHullOf b"
   shows "∀b R. ¬(R overlaps s) ⟶ (∀R'. R' ≥⇩c⇩i ⇩b R)" 
-proof (unfold crossesIncludedInAsMuchAs_def, (rule allI)+, 
-rule impI, 
-(rule allI)+, 
-(rule impI)+)
-(*proof ((rule allI)+, rule impI, (rule allI)+)*)
-  fix b R R' t
-  (*assume "¬(R overlaps s)" and "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and "R crosses s"
-  have "R' crosses s"
-    using SC1 ‹R crosses s› ‹¬ R overlaps s› by blast*)
-  assume "¬ R overlaps s" and "t ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and "R crosses t" 
-  have "R overlaps t"
-    by (simp add: SC1 ‹R crosses t›)
-  have "(∀t. s ≤⇩b t ⟶ R crosses s)"
-    using SC2 ‹R crosses t› by blast
-  have "(∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b t)"
-    using SC1 SC2 ‹R crosses t› ‹¬ R overlaps s› isHull_def s_isHullOf_b by blast
-  show "R' crosses t"
-    using SC1 SC2 ‹R crosses t› ‹¬ R overlaps s› isHull_def s_isHullOf_b by blast 
-  (*show "R' crosses t"
-    using SC1 SC2 ‹R crosses t› ‹¬ R overlaps s› isHull_def s_isHullOf_b by blast*)
-  qed
-
-
-lemma T6_belongsAsMuchAs:
-  assumes "s isHullOf b" and "¬(R overlaps s)"
-  shows "∀b R. ¬(R overlaps s) ⟶ (∀R'. R' ≥⇩b R)" 
-proof (unfold belongsAsMuchAs_def overlapsAsMuchAs_def , rule allI, rule allI, rule impI, rule allI, rule conjI, unfold crossesIncludedInAsMuchAs_def)
+proof ((rule allI)+, rule impI, rule allI)
   fix b R R'
-  assume "¬ R overlaps s"
-
-
-  have "∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R crosses s ⟶ R' crosses s"
-    using SC1 SC2 ‹¬ R overlaps s› assms(1) isHull_def by blast
-
-    have "∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n
+  assume r_nov_s: "¬(R overlaps s)"
+  have r'_cib_r: "R' ≥⇩c⇩i ⇩b R"
+  proof (unfold crossesIncludedInAsMuchAs_def, rule allI, (rule impI)+)
+    fix s
+    assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r_crosses_s: "R crosses s"
+    have "(∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s)"
+      using SC1 SC2 isHull_def r_crosses_s r_nov_s s_isHullOf_b by blast
+    have exist_s: "(∃s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n
            b ⟶
-           R overlaps s ⟶
-           R' overlaps s"
-    by (meson T4 eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def overlapsAsMuchAs_def)
+           s' ≤⇩b s)"
+      by (simp add: ‹∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s›)
+    obtain s' where "s' ≤⇩b s"
+      using ‹∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s› s_inbundle_b by blast
+    have "R crosses s ⟶ (∀s. s' ≤⇩b s ⟶ R crosses s')"
+      using SC2 by blast
+    show "R' crosses s"
+      using SC1 SC2 isHull_def r_crosses_s r_nov_s s_isHullOf_b by blast
+  qed
+  show "¬ R overlaps s ⟹ R' ≥⇩c⇩i ⇩b R"
+    using r'_cib_r by blast
 qed
 
-lemma T7_crossesIncludedInAsMuchAs:
-  assumes s_isCoreOf_b: "s isCoreOf b" and r_isIncludedIn_s: "R isIncludedIn s" 
-  shows "∀b R. R isIncludedIn s ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')" 
-(*
-proof (unfold inclusion_def crossesIncludedInAsMuchAs_def, (rule allI)+, (rule impI)+)
-  fix b R
-  assume "region_to_section R isPartOf s" 
-  show "∀R' s.
-              s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n
-              b ⟶
-              R' crosses
-              s ⟶
-              R crosses s"
-  proof ((rule allI)+, (rule impI)+)
-    fix R' s
-    assume "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and "R' crosses s"
-    show "R crosses s"
-*)
-proof - 
-  show "∀b R. R isIncludedIn s ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')" 
-    sorry
-qed
 
-(* 
-definition overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
-"overlapsAsMuchAs R b R' == (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' overlaps s ⟶ R overlaps s)"
-
-notation 
-  overlapsAsMuchAs ("_ ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
-
-definition eq_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
-"eq_overlapsAsMuchAs R b R' == R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ R' ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
-
-notation 
-  eq_overlapsAsMuchAs ("_ ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
-
-abbreviation
-rev_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  ("_ ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
-where"rev_overlapsAsMuchAs R b R' == overlapsAsMuchAs R' b R"
-
-definition more_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
-"more_overlapsAsMuchAs R b R' == R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬(R' ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
-
-notation 
-  more_overlapsAsMuchAs ("_ >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
-
-abbreviation
-less_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  ("_ <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
-where"less_overlapsAsMuchAs R b R' == more_overlapsAsMuchAs R' b R"
-*)
-
-lemma T7_belongsAsMuchAs:
-  assumes s_isCoreOf_b: "s isCoreOf b"
-  shows "∀b R. R isIncludedIn s ⟶ (∀R'. R ≥⇩b R')"
-proof (unfold belongsAsMuchAs_def, (rule allI)+, rule impI, rule allI, rule conjI)
+lemma T6_belongsAsMuchAs: "∀b R. ¬(R overlaps s) ∧ (s isHullOf b) ⟶ (∀R'. R' ≥⇩b R)" 
+proof ( (rule allI)+, rule impI, rule allI, unfold belongsAsMuchAs_def)
   fix b R R'
-  assume r_isIncludedIn_s: "R isIncludedIn s"
-  have r_cib_r': "R ≥⇩c⇩i ⇩b R'"
-    using T7_crossesIncludedInAsMuchAs r_isIncludedIn_s s_isCoreOf_b by blast
-  have r'_overlapsb_r: "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+  assume assm: "¬(R overlaps s) ∧ s isHullOf b"
+  have a: "R' ≥⇩c⇩i ⇩b R"
+    using T6_crossesIncludedInAsMuchAs assm by blast
+  have b: "R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
   proof (unfold overlapsAsMuchAs_def, rule allI, (rule impI)+)
     fix s
-    assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r'_overlaps_s: "R' overlaps s"
-    show "R overlaps s"
-      by (meson T4 r'_overlaps_s s_inbundle_b eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def overlapsAsMuchAs_def) 
+    assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r_ov_s: "R overlaps s"
+    show r'_ov_s: "R' overlaps s"
+      using T1 assm isHull_def r_ov_s s_inbundle_b by blast
   qed
-  show "R isIncludedIn s ⟹ R ≥⇩c⇩i ⇩b R'"
-    by (simp add: r_cib_r')
-  show "R isIncludedIn s ⟹ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R" 
-    using r'_overlapsb_r by blast
+
+  from a and b have "R' ≥⇩c⇩i ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    by simp
+  show "¬ R overlaps s ∧ s isHullOf b ⟹ R' ≥⇩c⇩i ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" using a b by blast
+qed
+
+
+lemma T7_crossesIncludedInAsMuchAs: "∀b R. R isIncludedIn s ∧ s isCoreOf b ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')"
+proof - 
+  show "∀b R. R isIncludedIn s ∧ s isCoreOf b ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')"
+    sorry 
+qed
+
+
+lemma T7_belongsAsMuchAs: "∀b R. R isIncludedIn s ∧ s isCoreOf b ⟶ (∀R'. R ≥⇩b R')"
+proof ((rule allI)+, rule impI, rule allI)
+  fix b R R'
+  assume assm: "R isIncludedIn s ∧ s isCoreOf b"
+  show "R ≥⇩b R'"
+  proof (unfold belongsAsMuchAs_def)
+    have r_cib_r': "R ≥⇩c⇩i ⇩b R'"
+      using T7_crossesIncludedInAsMuchAs assm by blast
+    have r'_ovb_r: "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+    proof (unfold overlapsAsMuchAs_def, rule allI, (rule impI)+)
+      fix s
+      assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r'_ov_s: "R' overlaps s"
+      show "R overlaps s"
+      proof - 
+        have f: "region_to_section R isPartOf s"
+          using T2 assm inclusion_def isCore_def s_inbundle_b by blast
+        have g: "s ≤⇩b s"
+          by (simp add: s_inbundle_b atLeastAsRestrictiveAs_reflexive)
+        show "R overlaps s"
+          using f isPartOf_def overlaps_def region_overlaps_itself by blast
+    qed
+  qed
+  show "R ≥⇩c⇩i ⇩b R' ∧  R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+    by (simp add: r'_ovb_r r_cib_r')
+qed
 qed
 
 
@@ -762,14 +728,12 @@ proof -
   proof (unfold belongsAsMuchAs_def, (rule allI)+, rule impI, rule allI)
     fix b R R'
     assume "R crosses s"
-    have "R ≥⇩c⇩i ⇩b R'"
+    have r_ci_b: "R ≥⇩c⇩i ⇩b R'"
       using T8_crossesIncludedInAsMuchAs ‹R crosses s› assms by blast
-    have "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
-      using T4 eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def by auto
-    show "R crosses s ⟹
-       R ≥⇩c⇩i ⇩b R' ∧
-       R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
-      by (simp add: ‹R ≥⇩c⇩i ⇩b R'› ‹R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R›)
+    have r_mob_r': "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+      by (meson SC1 SC2 ‹R crosses s› atLeastAsRestrictiveAs_reflexive overlapsAsMuchAs_def)
+    show "R crosses s ⟹ R ≥⇩c⇩i ⇩b R' ∧ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+      using r_ci_b r_mob_r' by blast
   qed
 qed
 
