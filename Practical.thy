@@ -549,14 +549,15 @@ proof (rule allI)+
     by (simp add: T4)
   from this consider "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R" | "R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" | "R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     by blast
-  then have f: "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R')"
+  then have final: "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
 
   proof (cases)
 
     assume "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
     have "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R')"
       using ‹R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R› more_overlapsAsMuchAs_def by blast
-    show subgoal1: "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ⟹ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    show subgoal1: "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ⟹ 
+(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
       by (simp add: ‹R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'›)
 
   next
@@ -564,7 +565,8 @@ proof (rule allI)+
     assume "R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     have "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R')"
       using ‹R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'› eq_overlapsAsMuchAs_def by auto
-    show subgoal2: "R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟹ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    show subgoal2: "R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟹ 
+(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
       by (simp add: ‹R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'›)
 
   next
@@ -572,33 +574,15 @@ proof (rule allI)+
     assume "R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     have "(R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
       using ‹R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'› more_overlapsAsMuchAs_def by blast
-    show "R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟹
-    R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧
-    R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨
-    R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧
-    ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-      sorry
+    show "R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟹ 
+(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
+      using ‹R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R› by blast
   qed
-  oops
 
-    
+  show "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    using final by blast
 
-
-                    
-lemma T52: "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-proof - 
-  show "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-    using T4 eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def by blast
-  oops
-
-lemma T53: "∀b R R'.  R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-proof (rule allI)+
-  fix b R R'
-  have "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∨  R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-    by (simp add: T4)
-  have "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
-    oops
-
+qed
 
 (********************Challenge problem****************************************)
 
@@ -731,20 +715,24 @@ where"less_overlapsAsMuchAs R b R' == more_overlapsAsMuchAs R' b R"
 *)
 
 lemma T7_belongsAsMuchAs:
-  assumes "s isCoreOf b"
+  assumes s_isCoreOf_b: "s isCoreOf b"
   shows "∀b R. R isIncludedIn s ⟶ (∀R'. R ≥⇩b R')"
 proof (unfold belongsAsMuchAs_def, (rule allI)+, rule impI, rule allI, rule conjI)
   fix b R R'
-  assume "R isIncludedIn s"
-  show "R ≥⇩c⇩i ⇩b R'"
-    using T7_crossesIncludedInAsMuchAs ‹R isIncludedIn s› assms by blast
-  show "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
-  proof (unfold overlapsAsMuchAs_def, rule allI, rule impI, rule impI)
+  assume r_isIncludedIn_s: "R isIncludedIn s"
+  have r_cib_r': "R ≥⇩c⇩i ⇩b R'"
+    using T7_crossesIncludedInAsMuchAs r_isIncludedIn_s s_isCoreOf_b by blast
+  have r'_overlapsb_r: "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+  proof (unfold overlapsAsMuchAs_def, rule allI, (rule impI)+)
     fix s
-    assume "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and "R' overlaps s"
+    assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r'_overlaps_s: "R' overlaps s"
     show "R overlaps s"
-      by (meson T4 ‹R' overlaps s› ‹s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b› eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def overlapsAsMuchAs_def)
+      by (meson T4 r'_overlaps_s s_inbundle_b eq_overlapsAsMuchAs_def more_overlapsAsMuchAs_def overlapsAsMuchAs_def) 
   qed
+  show "R isIncludedIn s ⟹ R ≥⇩c⇩i ⇩b R'"
+    by (simp add: r_cib_r')
+  show "R isIncludedIn s ⟹ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R" 
+    using r'_overlapsb_r by blast
 qed
 
 
@@ -757,13 +745,13 @@ proof -
   oops
 
 lemma T8_crossesIncludedInAsMuchAs:
-  assumes "s isHullOf b"
+  assumes a: "s isHullOf b"
   shows "∀b R. R crosses s ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')"
 proof ((rule allI)+, rule impI, rule allI)
   fix b R R'
   assume "R crosses s"
-  show "R ≥⇩c⇩i ⇩b R'"
-    using SC2 ‹R crosses s› atLeastAsRestrictiveAs_reflexive crossesIncludedInAsMuchAs_def by blast
+  show "R crosses s ⟹  R ≥⇩c⇩i ⇩b R'"
+    using SB2 SC2 crossesIncludedInAsMuchAs_def by blast
 qed
 
 lemma T8_belongsAsMuchAs:
