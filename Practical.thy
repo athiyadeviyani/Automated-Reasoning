@@ -310,7 +310,7 @@ locale crossing_sector = comparison incidence_points_on_sections
 and region_to_section :: "'region ⇒ 'section" 
 and crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80)  
 and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80) +
-assumes SC2: "∀b S R. (R crosses S ⟶ (∀S. (S' ≤⇩b S ⟶ R crosses S')))"
+assumes SC2: "∀b S R. (R crosses S ⟶ (∀S'. (S' ≤⇩b S ⟶ R crosses S')))"
 (*Write your formalisation of Axiom SC2 here*) (*1 mark*)
 begin
 
@@ -573,19 +573,11 @@ qed
 definition crossesOrIncludedIn :: "'region ⇒ 'section ⇒ bool" (infix "ci" 80) where
 "R ci S = (R crosses S ∨ R isIncludedIn S)"
 
-(* 
-definition overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
-"overlapsAsMuchAs R b R' == (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' overlaps s ⟶ R overlaps s)"
-
-notation 
-  overlapsAsMuchAs ("_ ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
-
-*) 
 
 (*Write your definition of `crosses or is included in as much as' here*) (*2 marks*)
 (*If a region crosses a section or is included in a section, R ci S*)
 definition crossesIncludedInAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool" where
-"crossesIncludedInAsMuchAs R b R' = (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' crosses s ⟶ R crosses s)"
+"crossesIncludedInAsMuchAs R b R' = (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ (R' crosses s ⟶ R crosses s))"
 
 notation 
   crossesIncludedInAsMuchAs ("_ ≥⇩c⇩i ⇩_ _" [80, 80, 80] 80)
@@ -611,16 +603,6 @@ proof ((rule allI)+, rule impI, rule allI)
   proof (unfold crossesIncludedInAsMuchAs_def, rule allI, (rule impI)+)
     fix s
     assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r_crosses_s: "R crosses s"
-    have "(∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s)"
-      using SC1 SC2 isHull_def r_crosses_s r_nov_s s_isHullOf_b by blast
-    have exist_s: "(∃s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n
-           b ⟶
-           s' ≤⇩b s)"
-      by (simp add: ‹∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s›)
-    obtain s' where "s' ≤⇩b s"
-      using ‹∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s› s_inbundle_b by blast
-    have "R crosses s ⟶ (∀s. s' ≤⇩b s ⟶ R crosses s')"
-      using SC2 by blast
     show "R' crosses s"
       using SC1 SC2 isHull_def r_crosses_s r_nov_s s_isHullOf_b by blast
   qed
@@ -650,10 +632,13 @@ qed
 
 
 lemma T7_crossesIncludedInAsMuchAs: "∀b R. R isIncludedIn s ∧ s isCoreOf b ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')"
-proof - 
-  show "∀b R. R isIncludedIn s ∧ s isCoreOf b ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')"
+proof ((rule allI)+, rule impI, rule allI)
+  fix b R R'
+  assume "R isIncludedIn s ∧ s isCoreOf b"
+  show "R ≥⇩c⇩i ⇩b R'"
     sorry 
 qed
+
 
 
 lemma T7_belongsAsMuchAs: "∀b R. R isIncludedIn s ∧ s isCoreOf b ⟶ (∀R'. R ≥⇩b R')"
