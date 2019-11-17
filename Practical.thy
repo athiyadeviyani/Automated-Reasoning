@@ -69,17 +69,11 @@ lemma "(P∨R)⟷(¬(¬P∧ ¬R))"
   apply assumption
   done
 
-lemma not_not_p_is_p: "¬¬P ⟹ P"
-  apply (rule classical)
-  apply (erule notE)
-  apply assumption
-  done
-
 (*1 mark*)
 lemma "(∀ x . F x ⟶ G x ) ⟶ ¬ (∃ x . F x ∧ ¬ G x )"
   apply (rule impI)
   apply (rule classical)
-  apply (drule not_not_p_is_p)
+  apply (drule notnotD)
   apply (erule exE)
   apply (erule allE)
   apply (erule conjE)
@@ -114,7 +108,7 @@ lemma "(∀x. P x)∨(∃x.¬P x)"
 lemma "(∀x. ¬ (P x ⟶ Q x)) ⟶ ¬(∃x. ¬P x ∧ Q x)"
   apply (rule impI)
   apply (rule classical)
-  apply (drule not_not_p_is_p)
+  apply (drule notnotD)
   apply (erule exE)
   apply (erule allE)
   apply (erule conjE)
@@ -470,36 +464,39 @@ proof ((rule allI)+, rule iffI)
     by (simp add: ‹R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R›)
 
 next 
+
 (* DIRECTION ⟶ *)
   fix b R R'
   assume lhs: "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+  show "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
+  proof -
 
-  have r'r_and_not_r_r': "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-    using lhs more_overlapsAsMuchAs_def by auto
-  have "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
-    by (simp add: r'r_and_not_r_r')
+    have r'r_and_not_r_r': "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+      using lhs more_overlapsAsMuchAs_def by auto
+  
+    have r_novb_r': "¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+      by (simp add: r'r_and_not_r_r')
+  
+    have a: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"
+      using overlapsAsMuchAs_def r_novb_r' by blast
+    from a obtain s where s_ls_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"
+      by blast
+  
+    have b: "∃s. R overlaps s"
+      using region_overlaps_itself by blast 
+    from b obtain s where r_o_s: "R overlaps s"
+      by blast
+  
+    have c: "∃s. ¬ R' overlaps s"
+      using overlapsAsMuchAs_def r_novb_r' by blast
+    from c obtain s where r'_no_s: "¬ R' overlaps s"
+      by blast 
 
-  have a: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"
-    using overlapsAsMuchAs_def r'r_and_not_r_r' by blast
-  from a obtain s where s_ls_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"
-    by blast
+  
+    from s_ls_b r_o_s r'_no_s show imp_statement: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
+      using overlapsAsMuchAs_def r'r_and_not_r_r' by blast
 
-  have b: "∃s. R overlaps s"
-    using region_overlaps_itself by blast 
-  from b obtain s where r_o_s: "R overlaps s"
-    by blast
-
-  have c: "∃s. ¬ R' overlaps s"
-    using overlapsAsMuchAs_def r'r_and_not_r_r' by blast
-  from c obtain s where r'_no_s: "¬ R' overlaps s"
-    by blast 
-
-  from s_ls_b r_o_s r'_no_s have ex: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
-    using overlapsAsMuchAs_def r'r_and_not_r_r' by blast
-
-  show "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ⟹ ∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
-    using ex by auto
-
+  qed
 qed
 
 
@@ -508,7 +505,51 @@ pen-and-paper proof by Kulik et al.\. In particular, indicate any reasoning, pro
 useful lemmas that you had to make explicit during the mechanisation but may have been glossed over
  or assumed by the pen-and-paper proof. Also highlight any inaccuracies in their language or 
 notation. Note any parts where you had to diverge from their reasoning, and why.
-Write your answer in a comment here.*) (*4 marks*)
+Write your answer in a comment here.
+
+====================================================================================================
+
+Writing a structured proof in Isabelle required me to explicitly state the lemmas and definitions
+that I am using, which are not really required in a normal mathematical proof (they're usually 
+intuitive). I would also have to prove intermediate steps that may seem trivial to prove in a 
+normal mathematical proof. For example, when I have the statement:
+
+            "∀s'. (s ≤⇩b s' ⟶ R overlaps s')"
+
+and I know that s ≤⇩b s' is true, I have to explicitly mention that R overlaps s' becomes true as 
+well to use it as a fact to prove something else. In a mathematical proof, this step is usually
+intuitive and does not need to be stated explicitly.
+
+In addition to that, to proof the left implication of T3, I had to do a proof by cases, which is
+quite different in Isabelle. In Kulik's proof it is defined more as an if-then statement:
+
+            If A holds then B and If C holds then D
+
+however in the Isar proof it has a quite different structure:
+
+            ...
+            have "A ∨ B"
+              by ..
+            from this consider "A" | "B" 
+              by ..
+            then have "C ∨ D" 
+
+            proof cases 
+              assume A
+              ..
+              show "A ⟹ C ∨ D" 
+            next
+              assume B
+              ..
+              show "B ⟹ C ∨ D"   
+
+which required me to write the proofs and the facts obtained from the proofs explicitly, which makes
+my proof deviate slightly from the proof from Kulik's paper (due to the additional intermediary 
+steps).
+
+====================================================================================================
+
+*) (*4 marks*)
 
 (*Write your formalisation and proof of Theorem T4 here*) (*1 mark*)
 lemma T4: "∀b R R'.  R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∨ R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
@@ -616,7 +657,6 @@ proof ( (rule allI)+, rule impI, rule allI, unfold belongsAsMuchAs_def)
     show r'_ov_s: "R' overlaps s"
       using T1 assm isHull_def r_ov_s s_inbundle_b by blast
   qed
-
   from a and b have "R' ≥⇩c⇩i ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     by simp
   show "¬ R overlaps s ∧ s isHullOf b ⟹ R' ≥⇩c⇩i ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" using a b by blast
@@ -638,7 +678,6 @@ proof ((rule allI)+, rule impI, rule allI)
     qed 
   qed
 qed
-
 
 
 lemma T7_belongsAsMuchAs: "∀b R. R isIncludedIn s ∧ s isCoreOf b ⟶ (∀R'. R ≥⇩b R')"
