@@ -21,8 +21,7 @@ lemma "(P⟶R)⟶(¬P∨R)"
   apply (erule notE)
   apply (rule disjI2)
   apply (erule impE)
-   apply assumption
-  apply assumption
+   apply assumption+
   done
 
 (*1 mark*)
@@ -119,7 +118,7 @@ lemma "(∀x. ¬ (P x ⟶ Q x)) ⟶ ¬(∃x. ¬P x ∧ Q x)"
 
 
 (*3 marks*)
-lemma "∃Bob. (drunk Bob ⟶ (∀y. drunk y))"
+lemma "∃Bob. (drunk Bob ⟶ (∀x. drunk x))"
   apply (rule classical)
   apply (rule exI)
   apply (rule impI)
@@ -134,7 +133,7 @@ lemma "∃Bob. (drunk Bob ⟶ (∀y. drunk y))"
 
 
 (*4 marks*)
-lemma "¬ (∃ barber . man barber ∧ (∀ x . man x ∧ ¬shaves x x ⟷ shaves barber x ))"
+lemma "¬ (∃barber. man barber ∧ (∀x. man x ∧ ¬shaves x x ⟷ shaves barber x ))"
   apply (rule notI)
   apply (erule exE)
   apply (erule conjE)
@@ -155,7 +154,6 @@ locale incidence =
     (*Write here your axiom stating that every section has 
                                             a point incident to it*) (*2 marks*)
     and section_uniqueness: "∀s l. (∀p. p ι⇩p⇩o⇩i⇩n⇩t s ⟷ p ι⇩p⇩o⇩i⇩n⇩t l) ⟶ s = l" 
-    (*  and section_uniqueness_meta: "⟦a ι⇩p⇩o⇩i⇩n⇩t s ⟷ a ι⇩p⇩o⇩i⇩n⇩t l⟧ ⟹ s = l" *)
     (*Write here your axiom stating that ANY two sections are the same
                                       if ANY of the same points are incident to each*) (*2 marks*)
 begin
@@ -413,22 +411,28 @@ proof ((rule allI)+, rule iffI)
     and r'_notoverlaps_s: "¬( R' overlaps s)"
     by blast
 
-  have s_s'_isPartOf: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s' ∨ s' ≤⇩b s"
-    by (simp add: SB2 s_inbundle_b)
+  (* This is where we diverge from Kulik et al's proof *) 
 
-  have h: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s' ⟶ R overlaps s'"
+  have isPartOf_disj: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s isPartOf s' ∨ s' isPartOf s"
+    using SB2 atLeastAsRestrictiveAs_def s_inbundle_b by auto
+
+  have fromSB2: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s' ∨ s' ≤⇩b s" 
+    (* this is the intermediate step Kulik skipped *)
+    by (simp add: atLeastAsRestrictiveAs_def isPartOf_disj s_inbundle_b)
+
+  have r_overlaps_s': "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s' ⟶ R overlaps s'"
     using T1 r_overlaps_s by blast
 
-  have i: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s ⟶ ¬R' overlaps s'"
+  have r'_not_overlaps_s': "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s ⟶ ¬R' overlaps s'"
     using T1 r'_notoverlaps_s by blast
 
-  from h i have r_oama_r': "R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-    using overlapsAsMuchAs_def s_s'_isPartOf by blast
+  from r_overlaps_s' and r'_not_overlaps_s' have r_oama_r': "R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    using fromSB2 overlapsAsMuchAs_def by blast
 
   have r_moreoverlaps_r': "R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     using more_overlapsAsMuchAs_def overlapsAsMuchAs_def r_oama_r' rhs by blast
 
-  show " ∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s ⟹ R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+  show "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s ⟹ R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     using r_moreoverlaps_r' by blast
 
 next 
@@ -436,7 +440,6 @@ next
 (* DIRECTION ⟶ *)
   fix b R R'
   assume lhs: "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
-  (*show "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"*) 
 
     have r'r_and_not_r_r': "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
       using lhs more_overlapsAsMuchAs_def by auto
@@ -444,23 +447,11 @@ next
     have r_novb_r': "¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
       by (simp add: r'r_and_not_r_r')
 
-    have a: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"
+    (*"¬(∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ R' overlaps s) 
+              ⟶ (∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s)"*)
+
+    have imp_statement: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
       using overlapsAsMuchAs_def r_novb_r' by blast
-    from a obtain s where s_ls_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"
-      by blast
-
-    have b: "∃s. R overlaps s"
-      using region_overlaps_itself by blast 
-    from b obtain s where r_o_s: "R overlaps s"
-      by blast
-
-    have c: "∃s. ¬ R' overlaps s"
-      using overlapsAsMuchAs_def r_novb_r' by blast
-    from c obtain s where r'_no_s: "¬ R' overlaps s"
-      by blast 
-
-    from s_ls_b r_o_s r'_no_s have imp_statement: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
-      using overlapsAsMuchAs_def r'r_and_not_r_r' by blast
 
     show "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ⟹ ∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
       by (simp add: imp_statement)
@@ -476,43 +467,23 @@ Write your answer in a comment here.
 
 ====================================================================================================
 
-Writing a structured proof in Isabelle required me to explicitly state the lemmas and definitions
-that I am using, which are not really required in a normal mathematical proof (they're usually 
-intuitive). I would also have to prove intermediate steps that may seem trivial to prove in a 
-normal mathematical proof. For example, when I have the statement:
+In Kulik et al.'s proof, it seemed like it was sufficient to say that for every s' where 
+s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b, if s isPartOf s' holds then we get R overlaps s', otherwise if s' isPartOf s holds 
+then ¬R' overlaps s'. In Kulik's case, it seemed quite trivial to mention that s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b as well, 
+however in Isabelle I had to mention it explicitly,  i.e. saying s isPartOf s' only is insufficient 
+to prove R overlaps s' -- I had to also state that s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b as well. 
+The same case holds for s' isPartOf s. This means that I had to say
 
-            "∀s'. (s ≤⇩b s' ⟶ R overlaps s')"
+  "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s' ⟶ R overlaps s'"
 
-and I know that s ≤⇩b s' is true, I have to explicitly mention that R overlaps s' becomes true as 
-well to use it as a fact to prove something else. In a mathematical proof, this step is usually
-intuitive and does not need to be stated explicitly.
+instead of the statement obtained from the direct translation from the paper
 
-In addition to that, to proof the left implication of T3, I had to do a proof by cases, which is
-quite different in Isabelle. In Kulik's proof it is defined more as an if-then statement:
+  "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s isPartOf s' ⟶ R overlaps s'"
 
-            If A holds then B and If C holds then D
-
-however in the Isar proof it has a quite different structure:
-
-            ...
-            have "A ∨ B"
-              by ..
-            from this consider "A" | "B" 
-              by ..
-            then have "C ∨ D" 
-
-            proof cases 
-              assume A
-              ..
-              show "C ∨ D" 
-            next
-              assume B
-              ..
-              show "C ∨ D"   
-
-which required me to write the proofs and the facts obtained from the proofs explicitly, which makes
-my proof deviate slightly from the proof from Kulik's paper (due to the additional intermediary 
-steps).
+Essentially what I'm trying to say is that Kulik skipped proving "s isPartOf s' ∨ s' isPartOf s" 
+and all the previous assumptions made yield "s ≤⇩b s' ∨ s' ≤⇩b s", which I did explicitly. Then I
+used "s ≤⇩b s' ∨ s' ≤⇩b s" as the 'missing' intermediate step to prove that "s isPartOf s' ∨ 
+s' isPartOf s" implies R overlaps s' or R overlaps s'.
 
 ====================================================================================================
 
