@@ -409,7 +409,8 @@ proof ((rule allI)+, rule iffI)
   fix b R R'
 
   assume rhs: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧  R overlaps s ∧ ¬ R' overlaps s" 
-  from rhs obtain s where s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r_overlaps_s: "R overlaps s" and r'_notoverlaps_s: "¬( R' overlaps s)"
+  from rhs obtain s where s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r_overlaps_s: "R overlaps s" 
+    and r'_notoverlaps_s: "¬( R' overlaps s)"
     by blast
 
   have s_s'_isPartOf: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s isPartOf s' ∨ s' isPartOf s"
@@ -437,7 +438,7 @@ proof ((rule allI)+, rule iffI)
     (* then have "R overlaps s'" *) 
     have r_overlaps_s': "R overlaps s'"
       using rest_implies_r_o_'s s_atleastasrestrictiveas_s' by blast
-    show "¬(R' overlaps s') ∨ R overlaps s'"
+    show "s isPartOf s' ⟹ ¬ R' overlaps s' ∨ R overlaps s'"
       by (simp add: r_overlaps_s')
 
   next
@@ -449,7 +450,7 @@ proof ((rule allI)+, rule iffI)
     (* then have "¬(R' overlaps s')" *) 
     have r'_notoverlaps_s': "¬(R' overlaps s')"
       using T1 r'_notoverlaps_s s'_atleastasrestrictiveas_s by blast
-    show "¬(R' overlaps s') ∨ R overlaps s'"
+    show "s' isPartOf s ⟹ ¬(R' overlaps s') ∨ R overlaps s'"
       by (simp add: r'_notoverlaps_s')
 
   qed
@@ -457,7 +458,8 @@ proof ((rule allI)+, rule iffI)
   from r_oama_r'_unf have r_oama_r': "R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     using isPartOf_def overlapsAsMuchAs_def overlaps_def r'_notoverlaps_s r_overlaps_s s_s'_isPartOf by fastforce
 
-  from r_oama_r' have r_moreoverlaps_r': "R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+
+  from r_oama_r' r'_notoverlaps_s have r_moreoverlaps_r': "R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     using more_overlapsAsMuchAs_def overlapsAsMuchAs_def rhs by blast
 
   show " ∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s ⟹ R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
@@ -492,7 +494,6 @@ next
     from c obtain s where r'_no_s: "¬ R' overlaps s"
       by blast 
 
-  
     from s_ls_b r_o_s r'_no_s show imp_statement: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
       using overlapsAsMuchAs_def r'r_and_not_r_r' by blast
 
@@ -565,7 +566,8 @@ proof (rule allI)+
     by (simp add: T4)
   from this consider "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R" | "R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'" | "R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     by blast
-  then have final: "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
+  then have final: "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ 
+      (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
 
   proof (cases)
 
