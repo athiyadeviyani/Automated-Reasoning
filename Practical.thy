@@ -1,5 +1,5 @@
 theory Practical
-imports Main
+  imports Main
 begin
 
 (***************************First-order logic*************************************)
@@ -48,7 +48,7 @@ lemma "(P∨R)⟷(¬(¬P∧ ¬R))"
   apply (rule iffI)
    apply (erule disjE)
     apply (rule notI)
-  apply (erule conjE)
+    apply (erule conjE)
     apply (erule notE)
     apply assumption
    apply (rule notI)
@@ -56,16 +56,16 @@ lemma "(P∨R)⟷(¬(¬P∧ ¬R))"
    apply (erule notE)+
    apply assumption
 
- apply (rule classical)
-   apply (erule notE)
-   apply (rule conjI)
+  apply (rule classical)
+  apply (erule notE)
+  apply (rule conjI)
    apply (rule notI)
    apply (erule notE)
    apply (rule disjI1)
    apply assumption
   apply (rule notI)
-   apply (erule notE)
-   apply (rule disjI2)
+  apply (erule notE)
+  apply (rule disjI2)
   apply assumption
   done
 
@@ -135,45 +135,45 @@ lemma "∃Bob. (drunk Bob ⟶ (∀y. drunk y))"
 
 (*4 marks*)
 lemma "¬ (∃ barber . man barber ∧ (∀ x . man x ∧ ¬shaves x x ⟷ shaves barber x ))"
-apply (rule notI)
-apply (erule exE)
-apply (erule conjE)
-apply (erule allE)
-apply (erule iffE)
-apply (erule impE)
-apply (rule conjI)
-apply assumption
-apply (rule notI)
-apply (erule impE, assumption, erule conjE, erule notE, assumption)+
-done
-  
+  apply (rule notI)
+  apply (erule exE)
+  apply (erule conjE)
+  apply (erule allE)
+  apply (erule iffE)
+  apply (erule impE)
+   apply (rule conjI)
+    apply assumption
+   apply (rule notI)
+   apply (erule impE, assumption, erule conjE, erule notE, assumption)+
+  done
+
 
 locale incidence =
   fixes incidence_points_on_sections :: "'point ⇒ 'section ⇒ bool" (infix " ι⇩p⇩o⇩i⇩n⇩t " 80)
   fixes region_to_section :: "'region ⇒ 'section" 
   assumes section_nonempty: "∀s. ∃p. p ι⇩p⇩o⇩i⇩n⇩t s" 
-(*Write here your axiom stating that every section has 
+    (*Write here your axiom stating that every section has 
                                             a point incident to it*) (*2 marks*)
-  and section_uniqueness: "∀s l. (∀p. p ι⇩p⇩o⇩i⇩n⇩t s ⟷ p ι⇩p⇩o⇩i⇩n⇩t l) ⟶ s = l" 
-(*  and section_uniqueness_meta: "⟦a ι⇩p⇩o⇩i⇩n⇩t s ⟷ a ι⇩p⇩o⇩i⇩n⇩t l⟧ ⟹ s = l" *)
-(*Write here your axiom stating that ANY two sections are the same
+    and section_uniqueness: "∀s l. (∀p. p ι⇩p⇩o⇩i⇩n⇩t s ⟷ p ι⇩p⇩o⇩i⇩n⇩t l) ⟶ s = l" 
+    (*  and section_uniqueness_meta: "⟦a ι⇩p⇩o⇩i⇩n⇩t s ⟷ a ι⇩p⇩o⇩i⇩n⇩t l⟧ ⟹ s = l" *)
+    (*Write here your axiom stating that ANY two sections are the same
                                       if ANY of the same points are incident to each*) (*2 marks*)
 begin
 
 definition isPartOf ::"'section ⇒ 'section ⇒ bool" (infix "isPartOf" 80) where 
-"a isPartOf b = (∀p. p ι⇩p⇩o⇩i⇩n⇩t a ⟶ p ι⇩p⇩o⇩i⇩n⇩t b)"
-(*write your formalisation of definition D1 here*) (*1 mark*)
+  "a isPartOf b = (∀p. p ι⇩p⇩o⇩i⇩n⇩t a ⟶ p ι⇩p⇩o⇩i⇩n⇩t b)"
+  (*write your formalisation of definition D1 here*) (*1 mark*)
 
 definition inclusion ::"'region ⇒ 'section ⇒ bool"(infix "isIncludedIn" 80) where
-(*write your formalisation of definition D2 here*) (*1 mark*)
-"a isIncludedIn b = (region_to_section a) isPartOf b"
+  (*write your formalisation of definition D2 here*) (*1 mark*)
+  "a isIncludedIn b = (region_to_section a) isPartOf b"
 
 definition overlaps ::"'region ⇒ 'section ⇒ bool"(infix "overlaps" 80) where
-(*write your formalisation of definition D3 here*) (*1 mark*)
-"a overlaps b = (∃p. p ι⇩p⇩o⇩i⇩n⇩t (region_to_section a) ∧ p ι⇩p⇩o⇩i⇩n⇩t b)"
+  (*write your formalisation of definition D3 here*) (*1 mark*)
+  "a overlaps b = (∃p. p ι⇩p⇩o⇩i⇩n⇩t (region_to_section a) ∧ p ι⇩p⇩o⇩i⇩n⇩t b)"
 
 lemma region_overlaps_itself: "R overlaps (region_to_section R)"
-(*Write your structured proof here*) (*2 marks*)
+  (*Write your structured proof here*) (*2 marks*)
 proof (unfold overlaps_def)
   from section_nonempty obtain p where "p ι⇩p⇩o⇩i⇩n⇩t region_to_section R" by blast
   then show "∃p. p  ι⇩p⇩o⇩i⇩n⇩t region_to_section R ∧ p  ι⇩p⇩o⇩i⇩n⇩t region_to_section R"
@@ -188,10 +188,10 @@ lemma isPartOf_transitive:
   assumes ab: "a isPartOf b" and bc: "b isPartOf c"
   shows ac: "a isPartOf c"
 proof (unfold isPartOf_def)
-show "∀p. p  ι⇩p⇩o⇩i⇩n⇩t  a ⟶ p  ι⇩p⇩o⇩i⇩n⇩t  c"
+  show "∀p. p  ι⇩p⇩o⇩i⇩n⇩t  a ⟶ p  ι⇩p⇩o⇩i⇩n⇩t  c"
     using ab bc isPartOf_def by blast
 qed
-  
+
 lemma isPartOf_antisymmetric:
   assumes ab: "a isPartOf b" and ba: "b isPartOf a"
   shows "a = b"
@@ -206,16 +206,16 @@ end
 
 locale section_bundles =  incidence incidence_points_on_sections region_to_section 
   for  incidence_points_on_sections :: "'point ⇒ 'section ⇒ bool" 
-  and region_to_section :: "'region ⇒ 'section" +
+    and region_to_section :: "'region ⇒ 'section" +
   fixes crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80)
-  and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80) 
- assumes SC1:"∀s r. r crosses s ⟶ r overlaps s" (*Write your formalisation of Axiom SC1 here*) (*1 mark*)
- and SI1: "∀a b. (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n a ⟷ s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b) ⟶ a = b" (*Write your formalisation of Axiom SI1 here*)     (*1 mark*)
+    and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80) 
+  assumes SC1:"∀s r. r crosses s ⟶ r overlaps s" (*Write your formalisation of Axiom SC1 here*) (*1 mark*)
+    and SI1: "∀a b. (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n a ⟷ s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b) ⟶ a = b" (*Write your formalisation of Axiom SI1 here*)     (*1 mark*)
 begin
 
 definition atLeastAsRestrictiveAs :: "'section ⇒ 'bundle ⇒ 'section ⇒ bool" where 
-(*Write your formalisation of atLeastAsRestrictiveAs here*) (*1 mark*)
-"atLeastAsRestrictiveAs s b s' = (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s isPartOf s')"
+  (*Write your formalisation of atLeastAsRestrictiveAs here*) (*1 mark*)
+  "atLeastAsRestrictiveAs s b s' = (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s isPartOf s')"
 
 notation 
   atLeastAsRestrictiveAs ("_ ≤⇩_ _" [80, 80, 80] 80)
@@ -234,7 +234,7 @@ proof (unfold atLeastAsRestrictiveAs_def)
 qed
 
 lemma atLeastAsRestrictiveAs_transitive: 
-(*Formalise and prove that atLeastAsRestrictiveAs is transitive*)
+  (*Formalise and prove that atLeastAsRestrictiveAs is transitive*)
   assumes xy: "x ≤⇩b y" and yz: "y ≤⇩b z" 
   shows "x ≤⇩b z"
 proof (unfold atLeastAsRestrictiveAs_def)
@@ -243,7 +243,7 @@ proof (unfold atLeastAsRestrictiveAs_def)
 qed
 
 lemma atLeastAsRestrictiveAs_antisymmetric: 
-(*Formalise and prove that atLeastAsRestrictiveAs is antisymmetric*)
+  (*Formalise and prove that atLeastAsRestrictiveAs is antisymmetric*)
   assumes xy: "x ≤⇩b y" and yx: "y ≤⇩b x" 
   shows "x = y"
 proof - 
@@ -255,12 +255,12 @@ qed
 end
 
 locale comparison = section_bundles incidence_points_on_sections region_to_section 
- crossing incidence_sections_on_bundles
+  crossing incidence_sections_on_bundles
   for  incidence_points_on_sections :: "'point ⇒ 'section ⇒ bool" (infix "ι⇩p⇩o⇩i⇩n⇩t" 80) 
-  and region_to_section :: "'region ⇒ 'section" 
-  and crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80) 
-  and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80)+
-assumes SB2: "∀b s s'. (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b) ⟶ (s ≤⇩b s' ∨ s' ≤⇩b s)"
+    and region_to_section :: "'region ⇒ 'section" 
+    and crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80) 
+    and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80)+
+  assumes SB2: "∀b s s'. (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b) ⟶ (s ≤⇩b s' ∨ s' ≤⇩b s)"
     (*Write your formalisation of Axiom SB2 here*) (*1 mark*)
 
 begin
@@ -282,28 +282,28 @@ proof -
 qed
 
 definition isCore (infix "isCoreOf" 80) where
-"s isCoreOf b = (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ (∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s'))"
+  "s isCoreOf b = (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ (∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s'))"
 
 (*Write your definition of hull here*) (*1 mark*)
 definition isHull (infix "isHullOf" 80) where
-"s isHullOf b = (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ (∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s))"
+  "s isHullOf b = (s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ (∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s))"
 
 end
 
 locale crossing_sector = comparison incidence_points_on_sections 
-          region_to_section crossing incidence_sections_on_bundles
-          for incidence_points_on_sections :: "'point ⇒ 'section ⇒ bool" (infix "ι⇩p⇩o⇩i⇩n⇩t" 80) 
-and region_to_section :: "'region ⇒ 'section" 
-and crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80)  
-and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80) +
-assumes SC2: "∀b S R. (R crosses S ⟶ (∀S'. (S' ≤⇩b S ⟶ R crosses S')))"
-(*Write your formalisation of Axiom SC2 here*) (*1 mark*)
+  region_to_section crossing incidence_sections_on_bundles
+  for incidence_points_on_sections :: "'point ⇒ 'section ⇒ bool" (infix "ι⇩p⇩o⇩i⇩n⇩t" 80) 
+    and region_to_section :: "'region ⇒ 'section" 
+    and crossing :: "'region ⇒ 'section ⇒ bool" (infix "crosses" 80)  
+    and incidence_sections_on_bundles :: "'section ⇒ 'bundle ⇒ bool" (infix "ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n" 80) +
+  assumes SC2: "∀b S R. (R crosses S ⟶ (∀S'. (S' ≤⇩b S ⟶ R crosses S')))"
+    (*Write your formalisation of Axiom SC2 here*) (*1 mark*)
 begin
 
 
 lemma overlaps_core: (*Write your formalisation and structured proof of the remark `If a region 
 overlaps the core of a section bundle then it overlaps every section of the section bundle'*) 
-(*4 marks*)
+  (*4 marks*)
   assumes r_overlaps_s: "r overlaps s" and s_isCoreOf_b: "s isCoreOf b"
   shows "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ r overlaps s'"
 proof (rule allI, rule impI)
@@ -320,7 +320,7 @@ qed
 
 lemma crosses_hull: (*Write your formalisation and structured proof of the remark `If a region 
 crosses the hull of a section bundle then it crosses every sector of the section bundle'*) 
-(*4 marks*)
+  (*4 marks*)
   assumes r_crosses_s: "r crosses s" and s_isHullOf_b: "s isHullOf b"
   shows "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ r crosses s'"
 proof (rule allI, rule impI)
@@ -337,7 +337,7 @@ qed
 
 lemma not_overlap_hull:  (*Write your formalisation and structured proof of the remark `If a region 
 does not overlap the hull of a section bundle, it does not overlap any of its sections'*) 
-(*4 marks*)
+  (*4 marks*)
   assumes r_not_overlaps_s: "¬(r overlaps s)" and s_isHullOf_b: "s isHullOf b"
   shows "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ ¬(r overlaps s')"
 proof (rule allI, rule impI)
@@ -352,35 +352,35 @@ proof (rule allI, rule impI)
 qed
 
 definition overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
-"overlapsAsMuchAs R b R' == (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' overlaps s ⟶ R overlaps s)"
+  "overlapsAsMuchAs R b R' == (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' overlaps s ⟶ R overlaps s)"
 
 notation 
   overlapsAsMuchAs ("_ ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
 
 definition eq_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
-"eq_overlapsAsMuchAs R b R' == R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ R' ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+  "eq_overlapsAsMuchAs R b R' == R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ R' ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
 
 notation 
   eq_overlapsAsMuchAs ("_ ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
 
 abbreviation
-rev_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  ("_ ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
-where"rev_overlapsAsMuchAs R b R' == overlapsAsMuchAs R' b R"
+  rev_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  ("_ ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
+  where"rev_overlapsAsMuchAs R b R' == overlapsAsMuchAs R' b R"
 
 definition more_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  where 
-"more_overlapsAsMuchAs R b R' == R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬(R' ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
+  "more_overlapsAsMuchAs R b R' == R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬(R' ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
 
 notation 
   more_overlapsAsMuchAs ("_ >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
 
 abbreviation
-less_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  ("_ <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
-where"less_overlapsAsMuchAs R b R' == more_overlapsAsMuchAs R' b R"
+  less_overlapsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool"  ("_ <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩_ _" [80, 80, 80] 80)
+  where"less_overlapsAsMuchAs R b R' == more_overlapsAsMuchAs R' b R"
 
 (*Formalise and prove that overlapsAsMuchAs is reflexive and transitive*) (*2 marks*)
 
 lemma overlapsAsMuchAs_reflexive:
-(*Write your formalisation and proof that overlapsAsMuchAs is reflexive here*) 
+  (*Write your formalisation and proof that overlapsAsMuchAs is reflexive here*) 
   assumes "(region_to_section R) ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"  
   shows "R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
 proof -
@@ -390,7 +390,7 @@ qed
 
 
 lemma overlapsAsMuchAs_transitive:
-(*Write your formalisation and proof that overlapsAsMuchAs is transitive here*)
+  (*Write your formalisation and proof that overlapsAsMuchAs is transitive here*)
   assumes xy: "X ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b Y" and yz: "Y ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b Z"
   shows xz: "X ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b Z"
 proof - 
@@ -413,54 +413,20 @@ proof ((rule allI)+, rule iffI)
     and r'_notoverlaps_s: "¬( R' overlaps s)"
     by blast
 
-  have s_s'_isPartOf: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s isPartOf s' ∨ s' isPartOf s"
-    using SB2 atLeastAsRestrictiveAs_def s_inbundle_b by auto
-  have exist_s: "∃s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"
-    using s_inbundle_b by auto
-  from exist_s obtain s' where "s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"
-    by blast 
-  have s'_inbundle_b: "s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"
-    by (simp add: ‹s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b›) 
-  have "s isPartOf s' ∨ s' isPartOf s"
-    by (simp add: s'_inbundle_b s_s'_isPartOf)
-  from this consider "s isPartOf s'" |  "s' isPartOf s"
-    by blast 
-  then have r_oama_r'_unf: "¬(R' overlaps s') ∨ R overlaps s'"
+  have s_s'_isPartOf: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s' ∨ s' ≤⇩b s"
+    by (simp add: SB2 s_inbundle_b)
 
-  proof (cases)
+  have h: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s ≤⇩b s' ⟶ R overlaps s'"
+    using T1 r_overlaps_s by blast
 
-    (* assume s isPartOf s' *)
-    assume s_isPartOf_s': "s isPartOf s'"
-    have s_atleastasrestrictiveas_s': "s ≤⇩b s'"
-      by (simp add: atLeastAsRestrictiveAs_def s'_inbundle_b s_inbundle_b s_isPartOf_s')
-    have rest_implies_r_o_'s: "∀s'. (s ≤⇩b s' ⟶ R overlaps s')"
-      using T1 r_overlaps_s by blast
-    (* then have "R overlaps s'" *) 
-    have r_overlaps_s': "R overlaps s'"
-      using rest_implies_r_o_'s s_atleastasrestrictiveas_s' by blast
-    show "s isPartOf s' ⟹ ¬ R' overlaps s' ∨ R overlaps s'"
-      by (simp add: r_overlaps_s')
+  have i: "∀s'. s' ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ s' ≤⇩b s ⟶ ¬R' overlaps s'"
+    using T1 r'_notoverlaps_s by blast
 
-  next
+  from h i have r_oama_r': "R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    using overlapsAsMuchAs_def s_s'_isPartOf by blast
 
-    (* assume s' isPartOf s *)
-    assume s'_isPartOf_s: "s' isPartOf s"
-    have s'_atleastasrestrictiveas_s: "s' ≤⇩b s"
-      by (simp add: atLeastAsRestrictiveAs_def s'_inbundle_b s'_isPartOf_s s_inbundle_b)
-    (* then have "¬(R' overlaps s')" *) 
-    have r'_notoverlaps_s': "¬(R' overlaps s')"
-      using T1 r'_notoverlaps_s s'_atleastasrestrictiveas_s by blast
-    show "s' isPartOf s ⟹ ¬(R' overlaps s') ∨ R overlaps s'"
-      by (simp add: r'_notoverlaps_s')
-
-  qed
-
-  from r_oama_r'_unf have r_oama_r': "R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-    using isPartOf_def overlapsAsMuchAs_def overlaps_def r'_notoverlaps_s r_overlaps_s s_s'_isPartOf by fastforce
-
-
-  from r_oama_r' r'_notoverlaps_s have r_moreoverlaps_r': "R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-    using more_overlapsAsMuchAs_def overlapsAsMuchAs_def rhs by blast
+  have r_moreoverlaps_r': "R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
+    using more_overlapsAsMuchAs_def overlapsAsMuchAs_def r_oama_r' rhs by blast
 
   show " ∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s ⟹ R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     using r_moreoverlaps_r' by blast
@@ -470,34 +436,34 @@ next
 (* DIRECTION ⟶ *)
   fix b R R'
   assume lhs: "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
-  show "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
-  proof -
+  (*show "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"*) 
 
     have r'r_and_not_r_r': "R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
       using lhs more_overlapsAsMuchAs_def by auto
-  
+
     have r_novb_r': "¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
       by (simp add: r'r_and_not_r_r')
-  
+
     have a: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"
       using overlapsAsMuchAs_def r_novb_r' by blast
     from a obtain s where s_ls_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b"
       by blast
-  
+
     have b: "∃s. R overlaps s"
       using region_overlaps_itself by blast 
     from b obtain s where r_o_s: "R overlaps s"
       by blast
-  
+
     have c: "∃s. ¬ R' overlaps s"
       using overlapsAsMuchAs_def r_novb_r' by blast
     from c obtain s where r'_no_s: "¬ R' overlaps s"
       by blast 
 
-    from s_ls_b r_o_s r'_no_s show imp_statement: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
+    from s_ls_b r_o_s r'_no_s have imp_statement: "∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
       using overlapsAsMuchAs_def r'r_and_not_r_r' by blast
 
-  qed
+    show "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ⟹ ∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s"
+      by (simp add: imp_statement)
 qed
 
 
@@ -538,11 +504,11 @@ however in the Isar proof it has a quite different structure:
             proof cases 
               assume A
               ..
-              show "A ⟹ C ∨ D" 
+              show "C ∨ D" 
             next
               assume B
               ..
-              show "B ⟹ C ∨ D"   
+              show "C ∨ D"   
 
 which required me to write the proofs and the facts obtained from the proofs explicitly, which makes
 my proof deviate slightly from the proof from Kulik's paper (due to the additional intermediary 
@@ -574,8 +540,7 @@ proof (rule allI)+
     assume "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
     have "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R')"
       using ‹R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R› more_overlapsAsMuchAs_def by blast
-    show subgoal1: "R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ⟹ 
-(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
+    show "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
       by (simp add: ‹R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'›)
 
   next
@@ -583,8 +548,7 @@ proof (rule allI)+
     assume "R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     have "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R')"
       using ‹R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'› eq_overlapsAsMuchAs_def by auto
-    show subgoal2: "R ≅⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟹ 
-(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
+    show "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
       by (simp add: ‹R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'›)
 
   next
@@ -592,8 +556,7 @@ proof (rule allI)+
     assume "R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     have "(R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
       using ‹R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'› more_overlapsAsMuchAs_def by blast
-    show "R <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ⟹ 
-(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
+    show "(R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R ∧ ¬ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R') ∨ (R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R)"
       using ‹R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R' ∧ ¬ R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R› by blast
   qed
 
@@ -606,13 +569,13 @@ qed
 
 (*Write your definition of `a region crosses or is included in a section.` here*) (*2 marks*) 
 definition crossesOrIncludedIn :: "'region ⇒ 'section ⇒ bool" (infix "ci" 80) where
-"R ci S = (R crosses S ∨ R isIncludedIn S)"
+  "R ci S = (R crosses S ∨ R isIncludedIn S)"
 
 
 (*Write your definition of `crosses or is included in as much as' here*) (*2 marks*)
 (*If a region crosses a section or is included in a section, R ci S*)
 definition crossesIncludedInAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool" where
-"crossesIncludedInAsMuchAs R b R' = (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' ci s ⟶ R ci s)"
+  "crossesIncludedInAsMuchAs R b R' = (∀s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ⟶ R' ci s ⟶ R ci s)"
 
 notation 
   crossesIncludedInAsMuchAs ("_ ≥⇩c⇩i ⇩_ _" [80, 80, 80] 80)
@@ -620,7 +583,7 @@ notation
 
 (*Write your definition of `belongs as much as here: definition D8 in the paper.*) (*2 marks*)
 definition belongsAsMuchAs :: "'region ⇒ 'bundle ⇒ 'region ⇒ bool" where
-"belongsAsMuchAs R b R' = (R ≥⇩c⇩i ⇩b R' ∧ R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R')"
+  "belongsAsMuchAs R b R' = (R ≥⇩c⇩i ⇩b R' ∧ R ≥⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R')"
 
 notation 
   belongsAsMuchAs ("_ ≥⇩_ _" [80, 80, 80] 80)
@@ -698,16 +661,15 @@ proof ((rule allI)+, rule impI, rule allI)
       proof - 
         have f: "region_to_section R isPartOf s"
           using T2 assm inclusion_def isCore_def s_inbundle_b by blast
-        have g: "s ≤⇩b s"
-          by (simp add: s_inbundle_b atLeastAsRestrictiveAs_reflexive)
         show "R overlaps s"
           using f isPartOf_def overlaps_def region_overlaps_itself by blast
+      qed
     qed
-  qed
-  show "R ≥⇩c⇩i ⇩b R' ∧  R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
-    by (simp add: r'_ovb_r r_cib_r')
+    show "R ≥⇩c⇩i ⇩b R' ∧  R' ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R"
+      by (simp add: r'_ovb_r r_cib_r')
   qed
 qed
+
 
 lemma T8_crossesIncludedInAsMuchAs: "∀b R. R crosses s ∧ s isHullOf b ⟶ (∀R'. R ≥⇩c⇩i ⇩b R')"
 proof ((rule allI)+, rule impI, rule allI)
