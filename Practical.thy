@@ -461,7 +461,7 @@ proof ((rule allI)+, rule iffI)
     using more_overlapsAsMuchAs_def overlapsAsMuchAs_def rhs by blast
 
   show " ∃s. s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∧ R overlaps s ∧ ¬ R' overlaps s ⟹ R >⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
-    by (simp add: ‹R' <⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R›)
+    using r_moreoverlaps_r' by blast
 
 next 
 
