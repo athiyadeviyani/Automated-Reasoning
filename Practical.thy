@@ -562,7 +562,8 @@ notation
 (*Formalise and write structured proofs of Theorems T6-T8 for both crossesIncludedInAsMuchAs and
 belongsAsMuchAs*) (*14 marks*)
 
-
+(* Kulik et. al's paper says that only (T7) and (T8) holds for the relation ≥⇩c⇩i so I'm not entirely
+sure whether or not this is provable. *)
 lemma T6_crossesIncludedInAsMuchAs: "∀b R. ¬(R overlaps s) ∧ s isHullOf b ⟶ (∀R'. R' ≥⇩c⇩i ⇩b R)" 
 proof ((rule allI)+, rule impI, rule allI) 
   fix b R R' 
@@ -591,7 +592,7 @@ proof ( (rule allI)+, rule impI, rule allI, unfold belongsAsMuchAs_def)
     fix s
     assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r_ov_s: "R overlaps s"
     show r'_ov_s: "R' overlaps s"
-      using T1 assm isHull_def r_ov_s s_inbundle_b by blast
+      using assm not_overlap_hull r_ov_s s_inbundle_b by blast
   qed
   from a and b have "R' ≥⇩c⇩i ⇩b R ∧ R ≤⇩o⇩v⇩e⇩r⇩l⇩a⇩p⇩s ⇩b R'"
     by simp
@@ -607,11 +608,10 @@ proof ((rule allI)+, rule impI, rule allI)
   proof (unfold crossesIncludedInAsMuchAs_def, rule allI, (rule impI)+)
     fix s
     assume s_inbundle_b: "s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b" and r'_ci_s: "R' ci s"
+    have disj: "R crosses s ∨ R isIncludedIn s"
+      using T2 assm isCore_def s_inbundle_b by blast
     show "R ci s"
-    proof (unfold crossesOrIncludedIn_def)
-      show "R crosses s ∨ R isIncludedIn s"
-        using T2 assm isCore_def s_inbundle_b by blast
-    qed 
+      by (simp add: crossesOrIncludedIn_def disj)
   qed
 qed
 
@@ -654,10 +654,10 @@ proof ((rule allI)+, rule impI, rule allI)
     proof (unfold crossesOrIncludedIn_def)
       show "R crosses s ∨ R isIncludedIn s"
       proof -
-        have "∀s. ¬ s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∨ R crosses s"
+        have contr: "¬ s ι⇩s⇩e⇩c⇩t⇩i⇩o⇩n b ∨ R crosses s"
           using assm crosses_hull by blast
-        then show "R crosses s ∨ R isIncludedIn s"
-          using s_in_b by blast
+        show "R crosses s ∨ R isIncludedIn s"
+          using contr s_in_b by blast
       qed 
     qed
   qed
