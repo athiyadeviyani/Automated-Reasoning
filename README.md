@@ -1,1 +1,1 @@
-# AR-coursework
+# Automated Reasoning Coursework
